@@ -1,9 +1,9 @@
 "use client";
 import { Grid, Box, Card, Typography, Stack } from "@mui/material";
 import Link from "next/link";
-import PageContainer from "../../(DashboardLayout)/components/container/PageContainer";
-import Logo from "../../(DashboardLayout)/layout/shared/logo/Logo";
-import AuthRegister from "../auth/AuthRegister";
+import PageContainer from "../components/container/PageContainer";
+import Logo from "../layout/shared/logo/Logo";
+import AuthRegister from "../../authentication/auth/AuthRegister";
 
 const Register2 = () => (
   <PageContainer title="Register" description="this is Register page">
@@ -33,7 +33,7 @@ const Register2 = () => (
           xs={12}
           sm={12}
           lg={4}
-          xl={3}
+          xl={4}
           display="flex"
           justifyContent="center"
           alignItems="center"
@@ -72,7 +72,7 @@ const Register2 = () => (
                   </Typography>
                   <Typography
                     component={Link}
-                    href="/authentication/login"
+                    href="/login"
                     fontWeight="500"
                     sx={{
                       textDecoration: "none",

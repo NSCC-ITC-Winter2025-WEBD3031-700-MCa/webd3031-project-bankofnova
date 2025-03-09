@@ -2,9 +2,9 @@
 import Link from "next/link";
 import { Grid, Box, Card, Stack, Typography } from "@mui/material";
 // components
-import PageContainer from "../../(DashboardLayout)/components/container/PageContainer";
-import Logo from "../../(DashboardLayout)/layout/shared/logo/Logo";
-import AuthLogin from "../auth/AuthLogin";
+import PageContainer from "../components/container/PageContainer";
+import Logo from "../layout/shared/logo/Logo";
+import AuthLogin from "../../authentication/auth/AuthLogin";
 
 const Login2 = () => {
   return (
@@ -35,7 +35,7 @@ const Login2 = () => {
             xs={12}
             sm={12}
             lg={4}
-            xl={3}
+            xl={4}
             display="flex"
             justifyContent="center"
             alignItems="center"
@@ -74,7 +74,7 @@ const Login2 = () => {
                     </Typography>
                     <Typography
                       component={Link}
-                      href="/authentication/register"
+                      href="/register"
                       fontWeight="500"
                       sx={{
                         textDecoration: "none",

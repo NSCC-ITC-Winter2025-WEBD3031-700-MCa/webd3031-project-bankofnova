@@ -8,7 +8,7 @@ export default withAuth(
     const token = await getToken({ req });
 
     if (!token) {
-      return NextResponse.redirect(new URL("/authentication/login", req.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
 
     const { pathname } = req.nextUrl;
@@ -29,7 +29,7 @@ export default withAuth(
   },
   {
     pages: {
-      signIn: "/authentication/login", // Redirect unauthorized users here
+      signIn: "/login",
     },
   }
 );

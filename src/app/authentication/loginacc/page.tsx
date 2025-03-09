@@ -44,7 +44,7 @@ const LoginAccountNumber = () => {
                     </Typography>
                     <Typography
                       component={Link}
-                      href="/authentication/register"
+                      href="/register"
                       fontWeight="500"
                       sx={{
                         textDecoration: "none",

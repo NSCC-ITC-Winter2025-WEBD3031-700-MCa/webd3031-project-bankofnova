@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Button, Box, Typography, Stack } from "@mui/material";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+"use client";
+
+import React, { useState } from "react";
+import { Box, Typography, Button, Stack } from "@mui/material";
+import { signIn, getSession } from "next-auth/react"; 
+import { useRouter } from "next/navigation"; // For navigation
 import CustomTextField from "../../(DashboardLayout)/components/forms/theme-elements/CustomTextField";
 
 interface LoginProps {
@@ -16,36 +17,34 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
-  const { data: session, status } = useSession();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     const res = await signIn("credentials", {
       redirect: false,
       identifier,
       password,
     });
-
+  
     if (res?.error) {
-      setError(res.error); // Display the error message if login fails
+      setError(res.error); 
       console.log("Login failed", res.error);
     } else {
-      setError(""); // Clear the error message on successful login
+      setError(""); 
       console.log("Login successful", res);
-
-      // Now check the role from session
+  
+      // Fetch session data to get user role
+      const session = await getSession();
+      console.log("Session after login:", session);
+  
       if (session?.user?.role === "admin") {
-        router.push("/dashboard"); // Redirect admin to the admin dashboard
+        router.push("/dashboard");
       } else {
-        router.push("/userprofile"); // Redirect regular user to the user dashboard
+        router.push("/userprofile");
       }
     }
   };
-
-
-  
-  
 
   return (
     <>
@@ -88,6 +87,7 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
             >
               Password or PIN
             </Typography>
+
             <CustomTextField
               type="password"
               variant="outlined"
@@ -105,12 +105,7 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
             </Typography>
           )}
 
-          <Stack
-            justifyContent="space-between"
-            direction="row"
-            alignItems="center"
-            my={2}
-          >
+          <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
             <Typography
               component="a"
               href="/authentication/forgot-password"
