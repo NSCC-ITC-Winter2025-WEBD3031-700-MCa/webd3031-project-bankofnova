@@ -46,7 +46,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
             
             // If registration is successful, redirect to the login page
             if (response.status === 201) {
-                router.push('/authentication/login');
+                router.push('/login');
             }
         } catch (err) {
             // Handle error (e.g., show error message)

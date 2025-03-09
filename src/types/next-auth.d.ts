@@ -3,13 +3,12 @@
 import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 
-// Extending the NextAuth session type to include 'account_number'
+// Extend the NextAuth types to include bank_accounts_id
 declare module "next-auth" {
   interface Session {
     user: {
       id: string;
       email: string | null;
-      account_number: string | null;
       role: string;
     };
   }
@@ -17,7 +16,6 @@ declare module "next-auth" {
   interface JWT {
     id: string;
     email: string | null;
-    account_number: string | null;
     role: string;
   }
 }
