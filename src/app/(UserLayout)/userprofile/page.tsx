@@ -47,24 +47,8 @@ const UserProfile = () => {
         <div>Loading...</div>
       ) : session ? (
         <Box>
-            <Grid container spacing={3}>
-              {/* Typography Examples for Chequing */}
-              <Grid item sm={12}>
-                <BlankCard>
-                  <CardContent>
-                    <Typography variant="h1">Accounts</Typography>
-                    {/* <Typography variant="body1" color="textSecondary">
-                      Get detailed insights into your chequing account balance and transactions.
-                    </Typography> */}
-                  </CardContent>
-                </BlankCard>
-              </Grid>
-              </Grid>
-          {/* <Grid item xs={12} lg={8}>
-            <Typography variant="h6">Chequing Balance: {chequing !== null ? `$${chequing}` : "Loading..."}</Typography>
-            <Typography variant="h6">Savings Balance: {savings !== null ? `$${savings}` : "Loading..."}</Typography>
-            {error && <Typography style={{ color: "red" }}>{error}</Typography>}
-          </Grid> */}
+          <Typography variant="h1">Accounts</Typography>
+   
           <Grid item xs={12} lg={8}  sx={{marginBottom: 2}}>
           
           <MonthlyEarnings title="Chequing" balance={chequing ?? 0} link="/accounts/chequing"/>

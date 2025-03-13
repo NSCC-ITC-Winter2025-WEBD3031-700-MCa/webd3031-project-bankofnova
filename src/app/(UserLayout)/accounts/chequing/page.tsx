@@ -53,27 +53,14 @@ const ChequingPage = () => {
           <Grid container spacing={3}>
             {/* Typography Examples for Chequing */}
             <Grid item sm={12}>
-              <BlankCard>
-                <CardContent>
                   <Typography variant="h2">Chequing</Typography>
                   <Typography variant="body1" color="textSecondary">
                     Chequing Account
                   </Typography>
-                </CardContent>
-              </BlankCard>
-            </Grid>
-
-            {/* Balance Display */}
-            <Grid item sm={12}>
-              <BlankCard>
-                <CardContent>
                   <Typography variant="h1" fontWeight="700">{formatBalance(chequingBalance)}</Typography>
                   {error && <Typography variant="body2" color="error">{error}</Typography>}
                   <Typography variant="body1" color="textSecondary">Current Balance</Typography>
-                </CardContent>
-              </BlankCard>
             </Grid>
-
             <Grid item sm={12}>
               <RecentTransactions />
             </Grid>
