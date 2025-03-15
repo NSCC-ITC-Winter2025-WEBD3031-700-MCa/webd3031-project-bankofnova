@@ -1,7 +1,6 @@
 'use client';
 import { Typography, Grid, CardContent } from '@mui/material';
 import PageContainer from '../../components/container/PageContainer';
-import BlankCard from '../../components/shared/BlankCard';
 import { useEffect, useState } from "react";
 import { fetchUserBalance } from "../../../api/user"; // Assuming this function fetches the user's savings balance from the backend
 import RecentTransactions from "../../components/overview/RecentTransactions";
@@ -21,13 +20,14 @@ const SavingsPage = () => {
     }
   }, [status, router]);
 
+
   useEffect(() => {
     if (session) {
-      // Fetch the Savings balance from API or state only if the user is authenticated
+      // Fetch the Chequing balance from API or state only if the user is authenticated
       const getBalance = async () => {
         try {
-          const response = await fetchUserBalance(); // Assume this returns an object with savings balance
-          setSavingsBalance(response.savings); // Set the savings balance to state
+          const response = await fetchUserBalance(); // Call without passing the userId
+          setSavingsBalance(response.savings); // Set the balance to state
         } catch (error) {
           setError("Failed to fetch balance.");
         }
@@ -36,6 +36,7 @@ const SavingsPage = () => {
       getBalance();
     }
   }, [session]); // Runs when the session changes
+  
 
   const formatBalance = (balance: number | null) => {
     if (balance === null || isNaN(Number(balance))) {
@@ -51,26 +52,22 @@ const SavingsPage = () => {
           <Grid container spacing={3}>
             {/* Typography Examples for Savings */}
             <Grid item sm={12}>
-              <BlankCard>
                 <CardContent>
                   <Typography variant="h2">Savings</Typography>
                   <Typography variant="body1" color="textSecondary">
                     Savings Account
                   </Typography>
                 </CardContent>
-              </BlankCard>
             </Grid>
             
             {/* Savings Balance Display */}
         {/* Balance Display */}
         <Grid item sm={12}>
-              <BlankCard>
                 <CardContent>
                   <Typography variant="h1" fontWeight="700">{formatBalance(savingsBalance)}</Typography>
                   {error && <Typography variant="body2" color="error">{error}</Typography>}
                   <Typography variant="body1" color="textSecondary">Current Balance</Typography>
                 </CardContent>
-              </BlankCard>
             </Grid>
 
             <Grid item sm={12}>

@@ -11,18 +11,11 @@ const jsonResponse = (data: object, status: number) =>
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-
     if (!session) {
       return jsonResponse({ error: "Not authenticated" }, 401);
     }
 
-    if (session.user.role === "admin") {
-      return jsonResponse({ error: "Admins do not have a balance" }, 403);
-    }
-
-    const userId = session.user.id;
-
-    // Query balances for both chequing and savings
+    const userId = session.user.id;  // Using session user ID directly
     const [accounts] = await pool.query<mysql.RowDataPacket[]>(
       `SELECT account_type, balance 
        FROM bank_accounts 
@@ -34,7 +27,7 @@ export async function GET(req: NextRequest) {
       return jsonResponse({ error: "Bank accounts not found" }, 404);
     }
 
-    // Format response to include both chequing and savings
+    // Format response to include both chequing and savings balances
     const balances = accounts.reduce((acc, account) => {
       acc[account.account_type] = account.balance;
       return acc;

@@ -1,5 +1,6 @@
 // src/lib/db.ts
-import mysql from 'mysql2/promise';
+import mysql, { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
+
 
 const pool = mysql.createPool({
   host: 'localhost',
@@ -11,13 +12,30 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-// Define the User interface with only essential fields
+// Define the User interface with donly essential fields
 export interface User {
   id: number;
   email: string;
   name: string;
   role: string;
   password: string; // Add the password field here for authentication
+}
+
+// Function to get user accounts by userId
+export async function getUserAccountsByUserId(userId: string) {
+  try {
+    const query = `
+      SELECT id, account_number, account_type, balance
+      FROM bank_accounts
+      WHERE user_id = ?;
+    `;
+    const [rows] = await pool.execute(query, [userId]); // Using the connection pool to execute the query
+
+    return rows;
+  } catch (error) {
+    console.error("Error fetching user accounts:", error);
+    throw new Error("Failed to fetch user accounts.");
+  }
 }
 
 // Updated function to get a user by email (simplified to return basic info)
@@ -46,6 +64,7 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
     throw new Error('Error fetching user by email');
   }
 };
+
 
 // Function to get a user by account number (already updated)
 export const getUserByAccountNumber = async (account_number: string): Promise<User | null> => {

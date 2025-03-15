@@ -21,12 +21,14 @@ const UserProfile = () => {
     // Redirect to login if not authenticated
     if (status === "unauthenticated") {
       router.push("/login"); // Redirect to login page
+      return; // Prevent further code execution if user is not authenticated
     }
     
     if (session) {
       const getBalances = async () => {
         try {
-          const balances = await fetchUserBalance(); // Expecting { chequing: 5142, savings: 40321 }
+          // Pass the user ID from the session to the fetchUserBalance function
+          const balances = await fetchUserBalance(); // Call without passing the userId
           setChequing(balances.chequing || 0);
           setSavings(balances.savings || 0);
         } catch (error) {
@@ -40,6 +42,7 @@ const UserProfile = () => {
       getBalances();
     }
   }, [session, status, router]); // Including router and status in dependency array
+   // Including router and status in dependency array
 
   return (
     <PageContainer title="Overview" description="this is HOME">
