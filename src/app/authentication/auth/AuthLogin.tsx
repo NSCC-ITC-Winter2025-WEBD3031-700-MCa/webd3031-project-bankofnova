@@ -16,28 +16,47 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [identifierError, setIdentifierError] = useState(""); // State for validation error
   const router = useRouter();
+
+  // Function to check if input is a valid email
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  // Function to check if input is a valid 10-digit number
+  const isValidAccountNumber = (accountNumber: string) => {
+    return /^\d{10}$/.test(accountNumber);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
+    // Validate the identifier (it must be either a 10-digit number or a valid email)
+    if (!isValidAccountNumber(identifier) && !isValidEmail(identifier)) {
+      setIdentifierError("Enter a valid 10-digit account number or a valid email address.");
+      return;
+    } else {
+      setIdentifierError(""); // Clear error if valid
+    }
+
     const res = await signIn("credentials", {
       redirect: false,
       identifier,
       password,
     });
-  
+
     if (res?.error) {
-      setError(res.error); 
+      setError(res.error);
       console.log("Login failed", res.error);
     } else {
-      setError(""); 
+      setError("");
       console.log("Login successful", res);
-  
+
       // Fetch session data to get user role
       const session = await getSession();
       console.log("Session after login:", session);
-  
+
       if (session?.user?.role === "admin") {
         router.push("/dashboard");
       } else {
@@ -75,6 +94,8 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setIdentifier(e.target.value)
               }
+              error={!!identifierError} // Apply error styling if validation fails
+              helperText={identifierError} // Show validation error message
             />
           </Box>
           <Box mt="25px">

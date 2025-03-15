@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "@/lib/schemas/registerSchema";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Box, Typography, Button, Stack, TextField } from "@mui/material";
 
 type RegisterFormData = {
   name: string;
@@ -13,107 +14,133 @@ type RegisterFormData = {
 };
 
 export default function RegisterForm() {
-    const [serverError, setServerError] = useState<string | null>(null);
-    const router = useRouter();
+  const [serverError, setServerError] = useState<string | null>(null);
+  const router = useRouter();
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm<RegisterFormData>({
-        resolver: zodResolver(registerSchema),
-    });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+  });
 
-    const onSubmit = async (data: RegisterFormData) => {
-        try {
-            const res = await fetch("/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
+  const onSubmit = async (data: RegisterFormData) => {
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-            const responseData = await res.json();
+      const responseData = await res.json();
 
-            if (!res.ok) {
-                throw new Error(responseData.error || "Registration failed");
-            }
+      if (!res.ok) {
+        throw new Error(responseData.error || "Registration failed");
+      }
 
-            alert("Registration successful! Redirecting to login...");
-            router.push("/login"); 
-        } catch (error: any) {
-            setServerError(error.message);
-        }
-    };
+      alert("Registration successful! Redirecting to login...");
+      router.push("/login");
+    } catch (error: any) {
+      setServerError(error.message);
+    }
+  };
 
-    // Determine which field to highlight first
-    const firstError = errors.name?.message || errors.email?.message || errors.password?.message;
+  return (
+    <Box display="flex" justifyContent="center" alignItems="center" minHeight="20vh" bgcolor="grey.100">
+      <Box
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        bgcolor="white"
+        boxShadow={3}
+        borderRadius={2}
+        p={4}
+        width="100%"
+        maxWidth="400px"
+      >
+        <Typography variant="h4" fontWeight="bold" textAlign="center" mb={2}>
+          Register
+        </Typography>
 
-    return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-100">
-            <form 
-                onSubmit={handleSubmit(onSubmit)} 
-                className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md space-y-6"
+        {serverError && (
+          <Typography color="error" textAlign="center" mb={2}>
+            {serverError}
+          </Typography>
+        )}
+
+        {/* Name Input */}
+        <Stack spacing={2}>
+          <Box>
+            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="name">
+              Name
+            </Typography>
+            <TextField
+              fullWidth
+              {...register("name")}
+              error={!!errors.name}
+              helperText={errors.name?.message}
+              variant="outlined"
+              placeholder="Enter your name"
+            />
+          </Box>
+
+          {/* Email Input */}
+          <Box>
+            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="email">
+              Email
+            </Typography>
+            <TextField
+              fullWidth
+              type="email"
+              {...register("email")}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+              variant="outlined"
+              placeholder="Enter your email"
+            />
+          </Box>
+
+          {/* Password Input */}
+          <Box>
+            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password">
+              Password
+            </Typography>
+            <TextField
+              fullWidth
+              type="password"
+              {...register("password")}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              variant="outlined"
+              placeholder="Enter your password"
+            />
+          </Box>
+
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            size="large"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Registering..." : "Register"}
+          </Button>
+
+          {/* Login Redirect */}
+          <Typography textAlign="center" color="textSecondary" variant="body2">
+            Already have an account?{" "}
+            <Typography
+              component="a"
+              href="/login"
+              sx={{ color: "primary.main", textDecoration: "none", fontWeight: "bold" }}
             >
-                <h2 className="text-2xl font-bold text-center text-gray-800">Register</h2>
-
-                {serverError && <p className="text-red-500 text-center">{serverError}</p>}
-
-                {/* Name Input */}
-                <div>
-                    <label className="block text-gray-700 font-medium mb-1">Name</label>
-                    <input 
-                        {...register("name")} 
-                        className={`border p-3 w-full rounded-lg focus:outline-none focus:ring-2 ${
-                            errors.name ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-blue-400"
-                        }`} 
-                        placeholder="Enter your name"
-                    />
-                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
-                </div>
-
-                {/* Email Input - Show only if no name error */}
-                {!errors.name && (
-                    <div>
-                        <label className="block text-gray-700 font-medium mb-1">Email</label>
-                        <input 
-                            {...register("email")} 
-                            type="email" 
-                            className={`border p-3 w-full rounded-lg focus:outline-none focus:ring-2 ${
-                                errors.email ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-blue-400"
-                            }`} 
-                            placeholder="Enter your email"
-                        />
-                        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
-                    </div>
-                )}
-
-                {/* Password Input - Show only if no name and email error */}
-                {!errors.name && !errors.email && (
-                    <div>
-                        <label className="block text-gray-700 font-medium mb-1">Password</label>
-                        <input 
-                            {...register("password")} 
-                            type="password" 
-                            className={`border p-3 w-full rounded-lg focus:outline-none focus:ring-2 ${
-                                errors.password ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-blue-400"
-                            }`} 
-                            placeholder="Enter your password"
-                        />
-                        {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
-                    </div>
-                )}
-
-                {/* Submit Button */}
-                <button 
-                    type="submit" 
-                    disabled={isSubmitting} 
-                    className={`w-full p-3 text-white rounded-lg font-semibold transition ${
-                        isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
-                    }`}
-                >
-                    {isSubmitting ? "Registering..." : "Register"}
-                </button>
-            </form>
-        </div>
-    );
+              Sign In
+            </Typography>
+          </Typography>
+        </Stack>
+      </Box>
+    </Box>
+  );
 }
