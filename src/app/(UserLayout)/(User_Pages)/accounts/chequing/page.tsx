@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'; // Import useRouter for navigation
 // import RecentTransactions from "../../../components/overview/RecentTransactions";
 // import ProductPerformance from '@/app/(DashboardLayout)/components/dashboard/ProductPerformance';
 import ProductPerformance2 from "../../../components/overview/TransactionTable";
-// import PurchaseCategories from "../../../components/overview/PurchaseCategories";
+import PurchaseCategories from "../../../components/blocks/PurchaseCategories";
 // import Traffic from "../../../components/overview/Traffic";
 
 const ChequingPage = () => {
@@ -74,6 +74,12 @@ const ChequingPage = () => {
 
     
   </Grid>
+  <Grid>
+  <PurchaseCategories 
+  chartSeries={[50, 25, 15, 10]} 
+  labels={['Groceries', 'Restaurants', 'Online Shopping', 'Transportation']} 
+/>
+</Grid>
   <Grid>
               <ProductPerformance2 />
             </Grid>

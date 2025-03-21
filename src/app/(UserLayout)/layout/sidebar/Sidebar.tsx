@@ -29,7 +29,7 @@ const LogoWithHover = () => (
         width: '100%', // Make sure it takes up full width
       }}
     >
-      <Logo img="/images/logos/dark-logo.svg" />
+      <Logo img="/images/logos/dark-logo-new1.svg" />
     </Box>
   </Link>
 );
