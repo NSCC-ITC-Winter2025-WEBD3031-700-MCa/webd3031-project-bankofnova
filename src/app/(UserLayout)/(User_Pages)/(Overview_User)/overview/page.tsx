@@ -49,7 +49,7 @@ const OverviewPage = () => {
    // Including router and status in dependency array
 
   return (
-    <PageContainer title="Overview" description="this is HOME">
+    <PageContainer title="Overview" description="this is OVERVIEW">
       {status === "loading" ? (
         <div>Loading...</div>
       ) : session ? (

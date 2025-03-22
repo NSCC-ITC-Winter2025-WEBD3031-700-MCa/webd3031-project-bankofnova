@@ -1,20 +1,18 @@
 import React, { useState } from "react";
-import { Box, Container, Grid, Typography, TextField, Button, IconButton, useTheme, useMediaQuery } from "@mui/material";
+import { Box, Container, Grid, Typography, TextField, Button, useTheme, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/system";
 
+// Styled components
 const NeuralFooter = styled(Box)(({ theme }) => ({
-  background: `linear-gradient(135deg, rgb(93, 135, 255) 0%, rgb(93, 135, 255, 0.8) 100%)`,  // New gradient with rgb(93, 135, 255)
+  background: theme.palette.info.main,
   padding: theme.spacing(8, 0),
   position: "relative",
   overflow: "hidden",
   "&::before": {
     content: '""',
     position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: `radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)`,
+    top: 0, left: 0, right: 0, bottom: 0,
+    background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)",
     pointerEvents: "none"
   }
 }));
@@ -29,32 +27,14 @@ const NeuralLink = styled(Typography)(({ theme }) => ({
   }
 }));
 
-const SocialButton = styled(IconButton)(({ theme }) => ({
-  color: "#fff",
-  margin: theme.spacing(0, 1),
-  transition: "all 0.3s ease-in-out",
-  "&:hover": {
-    transform: "scale(1.1)",
-    background: "rgba(255,255,255,0.1)"
-  }
-}));
-
 const NewsletterInput = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-root": {
     color: "#fff",
-    "& fieldset": {
-      borderColor: "rgba(255,255,255,0.3)"
-    },
-    "&:hover fieldset": {
-      borderColor: "rgba(255,255,255,0.5)"
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#fff"
-    }
+    "& fieldset": { borderColor: "rgba(255,255,255,0.3)" },
+    "&:hover fieldset": { borderColor: "rgba(255, 255, 255, 0.5)" },
+    "&.Mui-focused fieldset": { borderColor: "#fff" }
   },
-  "& .MuiInputLabel-root": {
-    color: "rgba(255,255,255,0.7)"
-  }
+  "& .MuiInputLabel-root": { color: "rgba(255,255,255,0.7)" }
 }));
 
 const MLFooter = () => {
@@ -71,6 +51,7 @@ const MLFooter = () => {
     <NeuralFooter>
       <Container maxWidth="lg">
         <Grid container spacing={4}>
+          {/* Bank Info */}
           <Grid item xs={12} md={4}>
             <Typography variant="h6" color="#fff" gutterBottom>
               Bank Of Nova.
@@ -80,30 +61,32 @@ const MLFooter = () => {
             </Typography>
           </Grid>
 
+          {/* Quick Links */}
           <Grid item xs={12} md={2}>
             <Typography variant="h6" color="#fff" gutterBottom>
               Quick Links
             </Typography>
             <Box display="flex" flexDirection="column" gap={1}>
-              <NeuralLink variant="body2">About Us</NeuralLink>
-              <NeuralLink variant="body2">Services</NeuralLink>
-              <NeuralLink variant="body2">Research</NeuralLink>
-              <NeuralLink variant="body2">Careers</NeuralLink>
+              {["About Us", "Services", "Research", "Careers"].map((link) => (
+                <NeuralLink key={link} variant="body2">{link}</NeuralLink>
+              ))}
             </Box>
           </Grid>
 
+          {/* Contact Info */}
           <Grid item xs={12} md={3}>
             <Typography variant="h6" color="#fff" gutterBottom>
               Contact
             </Typography>
             <Typography variant="body2" color="rgba(255,255,255,0.7)">
-              123 AI Boulevard
-              Halifax, Nova Scotia,Canada 94025
+              123 Boulevard
+              Halifax, Nova Scotia, Canada 94025
               contact@BankOfNova.com
-              +1 (902) 475-7634
+              +1 (123) 123-1231
             </Typography>
           </Grid>
 
+          {/* Newsletter Subscription */}
           <Grid item xs={12} md={3}>
             <Typography variant="h6" color="#fff" gutterBottom>
               Stay Connected
@@ -116,13 +99,20 @@ const MLFooter = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <Button onClick={handleSubscribe} sx={{ minWidth: "auto", p: 1, color: "#fff", "&:hover": { background: "rgba(255,255,255,0.1)" } }}>
+              <Button
+                onClick={handleSubscribe}
+                sx={{
+                  minWidth: "auto", p: 1, color: "#fff",
+                  "&:hover": { background: "rgba(255,255,255,0.1)" }
+                }}
+              >
                 Send
               </Button>
             </Box>
           </Grid>
         </Grid>
 
+        {/* Footer Bottom */}
         <Box mt={8} pt={3} borderTop={1} borderColor="rgba(255,255,255,0.1)">
           <Typography variant="body2" color="rgba(255,255,255,0.7)" align="center">
             © {new Date().getFullYear()} Bank Of Nova. All rights reserved.

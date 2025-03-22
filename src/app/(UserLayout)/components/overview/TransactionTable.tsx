@@ -40,7 +40,7 @@ const products = [
         // priority: "High",
         // pbg: "error.main",
         amount: "2.99",
-        balance: "12.8",
+        balance: "12.81",
     },
     {
         description: "Purchase",

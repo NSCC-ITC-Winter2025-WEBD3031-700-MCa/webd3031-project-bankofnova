@@ -29,7 +29,7 @@ const LogoWithHover = () => (
         width: '100%', // Make sure it takes up full width
       }}
     >
-      <Logo img="/images/logos/dark-logo.svg" />
+      <Logo img="/images/logos/dark-logo3.svg" />
     </Box>
   </Link>
 );
@@ -56,10 +56,23 @@ const MSidebar = ({
 
   const shouldRenderAuthenticatedSidebar = status === 'authenticated';
   const shouldRenderUnauthenticatedSidebar = status === 'unauthenticated';
-  const isSpecialPage = ['/', '/login', '/register'].includes(pathname);
+  const specialPages = [
+    '/',
+    '/login',
+    '/register',
+    '/overview', // Include user-related pages
+    '/transactions/transfer/confirm',
+    '/accounts/chequing',
+    '/accounts/savings',
+    '/transactions',
+    '/transactions/transfer',
+    '/transactions/deposit',
+    '/transactions/movemoney',
+  ];
+  const isSpecialPage = specialPages.includes(pathname);
 
   // Determine sidebar position
-  const sidebarAnchor = !session && isSpecialPage ? 'right' : 'left';
+  const sidebarAnchor = 'left';
 
   // Force mobile sidebar on special pages
   if (isSpecialPage) {

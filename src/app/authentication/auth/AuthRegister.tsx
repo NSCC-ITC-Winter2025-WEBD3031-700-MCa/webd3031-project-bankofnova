@@ -7,13 +7,19 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Typography, Button, Stack, TextField } from "@mui/material";
 
+// Define an interface to include subtext and subtitle props
+interface RegisterFormProps {
+  subtext?: React.ReactNode;
+  subtitle?: React.ReactNode;
+}
+
 type RegisterFormData = {
   name: string;
   email: string;
   password: string;
 };
 
-export default function RegisterForm() {
+export default function RegisterForm({ subtext, subtitle }: RegisterFormProps) {
   const [serverError, setServerError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -47,65 +53,81 @@ export default function RegisterForm() {
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="20vh" bgcolor="grey.100">
+    
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
         bgcolor="white"
-        boxShadow={3}
-        borderRadius={2}
         p={4}
         width="100%"
-        maxWidth="400px"
-      >
-        <Typography variant="h4" fontWeight="bold" textAlign="center" mb={2}>
-          Register
+        sx={{
+          '@media (max-width:800px)': { p:0 }}}
+        >
+                 <input
+            type="text"
+            name="fakeUsername"
+            style={{ display: 'none' }}
+            autoComplete="username"
+          />
+          <input
+            type="password"
+            name="fakePassword"
+            style={{ display: 'none' }}
+            autoComplete="new-password"
+          />
+
+        <Typography variant="h2" fontWeight="700" mb="40px">
+        Register
         </Typography>
 
+        {subtext && (
+          <Box mb={2} textAlign="center">
+            {subtext}
+          </Box>
+        )}
+        
         {serverError && (
           <Typography color="error" textAlign="center" mb={2}>
             {serverError}
           </Typography>
         )}
 
+        {subtitle && (
+          <Box mb={2} textAlign="center">
+            {subtitle}
+          </Box>
+        )}
+
         {/* Name Input */}
         <Stack spacing={2}>
+        <Typography variant="h3" fontWeight="700" mb="20px">
+          Create your Usermame and PIN
+          </Typography>
+          {/* <Typography variant="h6" fontWeight="300" mb="20px">
+            You'll use this Username and PIN to log in online
+          </Typography> */}
           <Box>
-            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="name">
-              Name
-            </Typography>
             <TextField
+              label="Name"
+
               fullWidth
               {...register("name")}
               error={!!errors.name}
               helperText={errors.name?.message}
               variant="outlined"
               placeholder="Enter your name"
+              sx={{
+                width: '50%', // Default width (50% on larger screens)
+                '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+              }}     
             />
           </Box>
-
-          {/* Email Input */}
-          <Box>
-            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="email">
-              Email
-            </Typography>
-            <TextField
-              fullWidth
-              type="email"
-              {...register("email")}
-              error={!!errors.email}
-              helperText={errors.email?.message}
-              variant="outlined"
-              placeholder="Enter your email"
-            />
-          </Box>
-
           {/* Password Input */}
           <Box>
-            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password">
-              Password
-            </Typography>
+ 
             <TextField
+              label="Password"
+
               fullWidth
               type="password"
               {...register("password")}
@@ -113,8 +135,39 @@ export default function RegisterForm() {
               helperText={errors.password?.message}
               variant="outlined"
               placeholder="Enter your password"
+              sx={{
+                width: '50%', // Default width (50% on larger screens)
+                '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+              }}     
             />
           </Box>
+
+          {/* Email Input */}
+          <Box>
+          <Typography variant="h3" fontWeight="700" mb="20px">
+          Enter your email address
+          </Typography>
+            <TextField
+              label="Email"
+              fullWidth
+              type="email"
+              {...register("email")}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+              variant="outlined"
+              placeholder="Enter your email"
+              sx={{
+                width: '50%', // Default width (50% on larger screens)
+                '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+              }}     
+            />
+          </Box>
+
+
+
+
+
+
 
           {/* Submit Button */}
           <Button
@@ -124,13 +177,20 @@ export default function RegisterForm() {
             fullWidth
             size="large"
             disabled={isSubmitting}
+            sx={{
+              width: '50%', // Default width (50% on larger screens)
+              '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+            }}     
           >
             {isSubmitting ? "Registering..." : "Register"}
           </Button>
 
           {/* Login Redirect */}
-          <Typography textAlign="center" color="textSecondary" variant="body2">
-            Already have an account?{" "}
+          <Typography textAlign="left" color="textSecondary" variant="body2"    
+            sx={{
+              width: '50%', // Default width (50% on larger screens)
+              '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+            }} > Already have an account?{" "}
             <Typography
               component="a"
               href="/login"
@@ -141,6 +201,5 @@ export default function RegisterForm() {
           </Typography>
         </Stack>
       </Box>
-    </Box>
   );
 }

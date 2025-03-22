@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import {
-  Avatar,
   Box,
   Menu,
   Button,
@@ -9,12 +8,14 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Stack, // Import Stack for horizontal layout
 } from "@mui/material";
-import { IconListCheck, IconMail, IconUser } from "@tabler/icons-react";
-import { signOut } from "next-auth/react"; // Import signOut from next-auth
+import { IconListCheck, IconMail, IconUser   } from "@tabler/icons-react"; // Import IconUserPlus
+import { signOut, useSession } from "next-auth/react"; // Import useSession from next-auth
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
+  const { data: session } = useSession(); // Get session data to check if user is logged in
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
   };
@@ -25,7 +26,6 @@ const Profile = () => {
   // Handle logout functionality
   const handleLogout = async () => {
     await signOut({ redirect: false }); // Log out without redirecting
-    // Optionally, you can redirect to a specific page after logout, e.g., the login page
     window.location.href = '/login'; // Redirect to the login page manually
   };
 
@@ -44,18 +44,10 @@ const Profile = () => {
         }}
         onClick={handleClick2}
       >
-        <Avatar
-          src="/images/profile/user-1.jpg"
-          alt="image"
-          sx={{
-            width: 35,
-            height: 35,
-          }}
-        />
+        <IconUser   width={35} /> {/* Replace Avatar with IconUserPlus */}
       </IconButton>
-      {/* ------------------------------------------- */}
+
       {/* Message Dropdown */}
-      {/* ------------------------------------------- */}
       <Menu
         id="msgs-menu"
         anchorEl={anchorEl2}
@@ -70,34 +62,71 @@ const Profile = () => {
           },
         }}
       >
-        <MenuItem>
-          <ListItemIcon>
-            <IconUser width={20} />
-          </ListItemIcon>
-          <ListItemText>My Profile</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <IconMail width={20} />
-          </ListItemIcon>
-          <ListItemText>My Account</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <IconListCheck width={20} />
-          </ListItemIcon>
-          <ListItemText>My Tasks</ListItemText>
-        </MenuItem>
-        <Box mt={1} py={1} px={2}>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleLogout} // Trigger logout when clicked
-            fullWidth
-          >
-            Logout
-          </Button>
-        </Box>
+        {session ? ( // Only show the dropdown items when logged in
+          <>
+            <MenuItem>
+              <ListItemIcon>
+                <IconUser   width={20} /> {/* Use the same icon here or any other icon */}
+              </ListItemIcon>
+              <ListItemText>My Profile</ListItemText>
+            </MenuItem>
+            <MenuItem>
+              <ListItemIcon>
+                <IconMail width={20} />
+              </ListItemIcon>
+              <ListItemText>My Account</ListItemText>
+            </MenuItem>
+            <MenuItem>
+              <ListItemIcon>
+                <IconListCheck width={20} />
+              </ListItemIcon>
+              <ListItemText>My Tasks</ListItemText>
+            </MenuItem>
+            <Box mt={1} py={1} px={2}>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleLogout} // Trigger logout when clicked
+                fullWidth
+              >
+                Logout
+              </Button>
+            </Box>
+          </>
+        ) : (
+          // If not logged in, show login/register buttons in a row
+          <Box mt={2}>
+            <Stack direction="row" spacing={2} justifyContent="center">
+              <Button
+                variant="outlined"
+                component={Link}
+                href="/login"
+                color="info"
+                disableElevation
+              >
+                Login
+              </Button>
+              <Button
+                variant="contained"
+                component={Link}
+                href="/register"
+                color="info"
+                disableElevation
+                sx={{
+                  backgroundColor: 'white',
+                  border: '1px solid red',
+                  color: 'info.main', // Set text color to the "info" color
+                  '&:hover': {
+                    borderColor: 'white', // Darken border color on hover
+                    color: 'white', // Darken text color on hover
+                  },
+                }}
+              >
+                Register
+              </Button>
+            </Stack>
+          </Box>
+        )}
       </Menu>
     </Box>
   );
