@@ -107,22 +107,21 @@ const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
   const LogoWithHover = () => {
     return (
       <Link href="/" passHref>
-        <Box
-          sx={{
-            '&:hover': {
-              opacity: 0.8, // Change opacity on hover for effect
-            },
-            display: session ? "none" : "flex", // Hide logo if logged in
-            justifyContent: 'center', // Center the logo horizontally
-            alignItems: 'center', // Center the logo vertically
-            width: '100%', // Make sure it takes up full width
-          }}
-        >
-          <Logo img="/images/logos/dark-logo.svg" />
-        </Box>
-      </Link>
-    );
-  };
+      <Box
+        sx={{
+          '&:hover': {
+            opacity: 0.8, // Change opacity on hover for effect
+          },
+          display: isOnAuthPages || !session ? 'flex' : 'none', // Show logo on auth pages or if no session
+          alignItems: 'center', // Center the logo vertically
+          width: '100%', // Make sure it takes up full width
+        }}
+      >
+        <Logo img="/images/logos/dark-logo-new1.svg" />
+      </Box>
+    </Link>
+  );
+};
   
   return (
     <AppBarStyled position="sticky" color="default">
@@ -133,29 +132,29 @@ const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
 
         {/* Hamburger Menu for Mobile */}
         {/* Hide on /overview page when lgUp, show on restricted paths or small screens */}
-<IconButton
-  color="inherit"
-  aria-label="menu"
-  onClick={toggleMobileSidebar}
-  sx={{
-    position: 'absolute',
-    left: session ? 10 : 'auto', // Move left if logged in
-    right: !session && isOnAuthPages ? 10 : 'auto', // Keep right if not logged in and on auth pages
-    display: (isUserPage || isOnAuthPages) && lgUp ? "none" : "block", // Hide on large screens for user pages or auth pages
-  }}
->
-  <IconMenu width="20" height="20" />
-</IconButton>
+        <IconButton
+        color="inherit"
+        aria-label="menu"
+        onClick={toggleMobileSidebar}
+        sx={{
+          position: 'absolute',
+          left: session ? 10 : 'auto', // Move left if logged in
+          right: !session && isOnAuthPages ? 10 : 'auto', // Keep right if not logged in and on auth pages
+          display: (session && isOnAuthPages) ? 'none' : (isUserPage || isOnAuthPages) && lgUp ? "none" : "block", // Hide on auth pages if logged in, and on user/auth pages for large screens
+        }}
+      >
+        <IconMenu width="20" height="20" />
+      </IconButton>
 
         {/* Right side: Login/Logout, Profile, or My Accounts */}
         {/* Stack for non-authenticated users (Login/Register) */}
         <Stack spacing={1} direction="row" alignItems="center" sx={{ position: 'absolute', right: 50 }}>
           {!session && (
             <>
-              <Button variant="contained" component={Link} href="/login" color="primary">
+              <Button variant="contained" component={Link} href="/login" color="primary" disableElevation>
                 Login
               </Button>
-              <Button variant="contained" component={Link} href="/register" color="primary">
+              <Button variant="contained" component={Link} href="/register" color="primary" disableElevation>
                 Register
               </Button>
             </>
@@ -167,11 +166,17 @@ const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
           {session && (
             <>
               {isOnAuthPages ? (
-                <Button variant="contained" onClick={handleMyAccountsClick} color="primary">
+                <>
+                <Button variant="outlined" onClick={handleLogout} color="secondary" disableElevation>
+                Logout
+                </Button>
+                <Button variant="contained" onClick={handleMyAccountsClick} color="primary" disableElevation>
                   My Accounts
                 </Button>
+                </>
+
               ) : (
-                <Button variant="contained" onClick={handleLogout} color="secondary">
+                <Button variant="outlined" onClick={handleLogout} color="secondary" disableElevation>
                   Logout
                 </Button>
               )}

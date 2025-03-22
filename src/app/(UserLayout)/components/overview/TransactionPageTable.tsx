@@ -17,8 +17,8 @@ const products = [
         date: "March 14",
         // priority: "Low",
         // pbg: "primary.main",
-        amount: "2.4",
-        account: "3.9",
+        amount: "2.49",
+        account: "3.99",
     },
     {
         description: "e-Transfer From: JOHN DOE",
@@ -26,8 +26,8 @@ const products = [
         date: "March 14",
         // priority: "Medium",
         // pbg: "secondary.main",
-        amount: "2.4",
-        account: "24.5",
+        amount: "2.42",
+        account: "24.51",
     },
     {
         description: "Purchase",
@@ -35,8 +35,8 @@ const products = [
         date: "March 14",
         // priority: "High",
         // pbg: "error.main",
-        amount: "2.4",
-        account: "12.8",
+        amount: "2.49",
+        account: "12.89",
     },
     {
         description: "Purchase",
@@ -44,8 +44,8 @@ const products = [
         date: "March 14",
         // priority: "Critical",
         // pbg: "success.main",
-        amount: "2.4",
-        account: "2.4",
+        amount: "2.49",
+        account: "2.49",
     },
 ];
 
