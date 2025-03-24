@@ -22,7 +22,6 @@ const Register2 = () => (
                   spacing={1}
                   mt={3}
                 >
-
                 </Stack>
               }
             />

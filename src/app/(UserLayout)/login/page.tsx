@@ -61,7 +61,7 @@ const Login2 = () => {
                       fontWeight="500"
                       sx={{
                         textDecoration: "none",
-                        color: "primary.main",
+                        color: "info.main",
                       }}
                     >
                       Create an account

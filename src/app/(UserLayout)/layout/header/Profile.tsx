@@ -115,12 +115,6 @@ const Profile = () => {
                 disableElevation
                 sx={{
                   backgroundColor: "white",
-                  color: "info.main",
-                  "&:hover": {
-                    backgroundColor: "info.main",
-                    borderColor: "info.main",
-                    color: "white",
-                  },
                 }}
               >
                 Register
@@ -128,11 +122,13 @@ const Profile = () => {
              
               <Button
                 variant="contained"
+                
                 component={Link}
                 size= "large"
                 href="/login"
                 color="info"
                 disableElevation
+        
               >
                 Login
               </Button>

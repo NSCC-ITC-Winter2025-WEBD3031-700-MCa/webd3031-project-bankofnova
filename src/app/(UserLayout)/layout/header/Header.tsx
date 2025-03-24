@@ -177,43 +177,44 @@ const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
       {lgUp && (
         <>
 
+        <Button
+          variant="contained"
+          component={Link}
+          href="/register"
+          color="info"
+          size= "large"
 
-<Button
-  variant="outlined"
-  component={Link}
-  href="/register"
-  color="info"
-  disableElevation
-  sx={{
-    borderColor: isOnAuthPages ? "white" : "info.main", // Only white border on auth pages
-    color: isOnAuthPages ? "white" : "info.main", // White text on auth pages, info color otherwise
-    '&:hover': {
-      color: "white", 
-      backgroundColor: "info.main", 
-    },
-    backgroundColor: isOnAuthPages ? "transparent" : "theme.info", // Transparent background on auth pages
-  }}
->
-                Register
-</Button>
-<Button
-  variant="outlined"
-  component={Link}
-  href="/login"
-  color="info"
-  disableElevation
-  sx={{
-    borderColor: isOnAuthPages ? "white" : "info.main", // Only white border on auth pages
-    color: isOnAuthPages ? "white" : "info.main", // White text on auth pages, info color otherwise
-    '&:hover': {
-      color: "white", 
-      backgroundColor: "info.main", 
-    },
-    backgroundColor: isOnAuthPages ? "transparent" : "theme.info", // Transparent background on auth pages
-  }}
->
-                Login
-</Button>
+          disableElevation
+          sx={{
+            border: "1px solid white",
+            borderColor: isOnAuthPages ? "white" : "info.main", // Only white border on auth pages
+            color: isOnAuthPages ? "info.main" : "info.main", // White text on auth pages, info color otherwise
+            backgroundColor: isOnAuthPages ? "white" : "white", // Transparent background on auth pages
+          
+            '&:hover': {
+              backgroundColor: isOnAuthPages ? "white" : "white", // Transparent background on auth pages
+            },
+          }}
+        >
+          Register
+        </Button>
+        <Button
+          variant="contained"
+          component={Link}
+          href="/login"
+          color="info"
+        size= "large"
+
+          disableElevation
+          sx={{
+            border: "1px solid white",
+            borderColor: isOnAuthPages ? "white" : "white", // Only white border on auth pages
+            color: isOnAuthPages ? "white" : "white", // White text on auth pages, info color otherwise
+            backgroundColor: isOnAuthPages ? "info.main" : "theme.info", // Transparent background on auth pages
+          }}
+        >
+          Login
+        </Button>
         </>
       )}
       {/* Conditionally render Profile based on lgUp */}

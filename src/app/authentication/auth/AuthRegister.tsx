@@ -116,6 +116,7 @@ export default function RegisterForm({ subtext, subtitle }: RegisterFormProps) {
             variant="outlined"
             placeholder="Enter your name"
             sx={{
+              marginBottom: '10px',
               width: '50%', // Default width (50% on larger screens)
               '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
             }}     
@@ -142,7 +143,7 @@ export default function RegisterForm({ subtext, subtitle }: RegisterFormProps) {
 
         {/* Email Input */}
         <Box>
-          <Typography variant="h3" fontWeight="700" mb="20px">
+          <Typography variant="h3" fontWeight="700" mb="20px" mt="10px">
             Enter your email address
           </Typography>
           <TextField
@@ -173,7 +174,11 @@ export default function RegisterForm({ subtext, subtitle }: RegisterFormProps) {
             sx={{
               borderRadius: '16px', // Rounded corners like Chip
               padding: '6px 16px',  // Adjust padding to make it look more like a Chip
-              textTransform: 'none' // Prevent text from being capitalized
+              textTransform: 'none', // Prevent text from being capitalized
+              marginTop: '10px',
+              marginBottom: '10px'
+
+
             }}     
           >
             {isSubmitting ? "Registering..." : "Register"}
@@ -189,33 +194,46 @@ export default function RegisterForm({ subtext, subtitle }: RegisterFormProps) {
               component="a"
               href="/login"
               sx={{ 
-                color: "primary.main", textDecoration: "none", fontWeight: "bold" }}
+                color: "info.main", 
+                textDecoration: "none",
+                fontWeight: "bold",
+              }}
             >
               Sign In
             </Typography>
           </Typography>
+        <Stack direction="column" spacing={2} my={2}>
 
           {/* Google SignUp Button */}
           <Button
             variant="outlined"
-            color="primary"
+            color="info"
             onClick={() => signIn("google")}
-            fullWidth
+            sx={{
+              width: '50%', // Default width (50% on larger screens)
+              '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+            }}    
             startIcon={<GoogleIcon />}
           >
             Sign up with Google
           </Button>
 
+
           {/* GitHub SignUp Button */}
           <Button
             variant="outlined"
-            color="primary"
+            color="info"
             onClick={() => signIn("github")}
-            fullWidth
+            sx={{
+              width: '50%', // Default width (50% on larger screens)
+              '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+            }}    
             startIcon={<GitHubIcon />}
           >
             Sign in with GitHub
           </Button>
+          </Stack>
+
         </Box>
       </Stack>
     </Box>

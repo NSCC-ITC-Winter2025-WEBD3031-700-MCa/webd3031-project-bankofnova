@@ -154,7 +154,7 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
               fontWeight="500"
               sx={{
                 textDecoration: 'none',
-                color: 'primary.main',
+                color: 'info.main',
                 display: 'block', // Ensures the link is treated as a block element, stacking it vertically
               }}
             >
@@ -167,9 +167,12 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
           {/* Google Login Button */}
           <Button
             variant="outlined"
-            color="primary"
+            color="info"
             onClick={() => signIn("google")}
-            fullWidth
+            sx={{
+              width: '50%', // Default width (50% on larger screens)
+              '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+            }}   
             startIcon={<GoogleIcon />}
           >
             Sign up with Google
@@ -178,9 +181,12 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
           {/* GitHub SignIn Button */}
           <Button
             variant="outlined"
-            color="primary"
+            color="info"
             onClick={() => signIn("github")}
-            fullWidth
+            sx={{
+              width: '50%', // Default width (50% on larger screens)
+              '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+            }}  
             startIcon={<GitHubIcon />}
           >
             Sign in with GitHub
