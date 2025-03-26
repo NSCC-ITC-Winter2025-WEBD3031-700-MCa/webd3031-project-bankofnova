@@ -1,117 +1,90 @@
-import React from 'react';
-import { Select, MenuItem } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import DashboardCard from '../shared/DashboardCard';
-import dynamic from "next/dynamic";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+import React, { useEffect, useState } from "react";
+import ReactApexChart from "react-apexcharts";
+import { ApexOptions } from "apexcharts"; // ✅ Import correct type
+import { MenuItem, Select, Typography } from "@mui/material";
 
+interface RegistrationData {
+  period: string;
+  count: number;
+}
 
-const SalesOverview = () => {
+const UserRegistrationsChart = () => {
+  const [filter, setFilter] = useState<"day" | "month" | "year">("day"); 
+  const [chartData, setChartData] = useState<{ categories: string[]; series: number[] }>({
+    categories: [],
+    series: [],
+  });
 
-    // select
-    const [month, setMonth] = React.useState('1');
+  useEffect(() => {
+    fetch(`/api/user/registration-stats?filter=${filter}`)
+      .then((res) => res.json())
+      .then((data: RegistrationData[]) => {
+        console.log(`Fetched Data (${filter}):`, data);
 
-    const handleChange = (event: any) => {
-        setMonth(event.target.value);
-    };
+        if (data.length > 0) {
+          setChartData({
+            categories: data.map((item) => formatPeriod(item.period, filter)),
+            series: data.map((item) => item.count),
+          });
+        } else {
+          console.warn("No data available for the selected filter");
+          setChartData({ categories: [], series: [] });
+        }
+      })
+      .catch((err) => console.error("Error fetching chart data:", err));
+  }, [filter]);
 
-    // chart color
-    const theme = useTheme();
-    const primary = theme.palette.primary.main;
-    const secondary = theme.palette.secondary.main;
+  const formatPeriod = (period: string, filter: "day" | "month" | "year") => {
+    if (!period) return "Unknown";
+    if (filter === "year") return period;
 
-    // chart
-    const optionscolumnchart: any = {
-        chart: {
-            type: 'bar',
-            fontFamily: "'Plus Jakarta Sans', sans-serif;",
-            foreColor: '#adb0bb',
-            toolbar: {
-                show: true,
-            },
-            height: 370,
-        },
-        colors: [primary, secondary],
-        plotOptions: {
-            bar: {
-                horizontal: false,
-                barHeight: '60%',
-                columnWidth: '42%',
-                borderRadius: [6],
-                borderRadiusApplication: 'end',
-                borderRadiusWhenStacked: 'all',
-            },
-        },
+    const date = new Date(period);
+    if (isNaN(date.getTime())) return "Invalid Date";
 
-        stroke: {
-            show: true,
-            width: 5,
-            lineCap: "butt",
-            colors: ["transparent"],
-          },
-        dataLabels: {
-            enabled: false,
-        },
-        legend: {
-            show: false,
-        },
-        grid: {
-            borderColor: 'rgba(0,0,0,0.1)',
-            strokeDashArray: 3,
-            xaxis: {
-                lines: {
-                    show: false,
-                },
-            },
-        },
-        yaxis: {
-            tickAmount: 4,
-        },
-        xaxis: {
-            categories: ['16/08', '17/08', '18/08', '19/08', '20/08', '21/08', '22/08', '23/08'],
-            axisBorder: {
-                show: false,
-            },
-        },
-        tooltip: {
-            theme: 'dark',
-            fillSeriesColor: false,
-        },
-    };
-    const seriescolumnchart: any = [
-        {
-            name: 'Eanings this month',
-            data: [355, 390, 300, 350, 390, 180, 355, 390],
-        },
-        {
-            name: 'Expense this month',
-            data: [280, 250, 325, 215, 250, 310, 280, 250],
-        },
-    ];
+    return filter === "day"
+      ? period.split("T")[0] 
+      : `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+  };
 
-    return (
+  // ✅ Explicitly define type as ApexOptions
+  const chartOptions: ApexOptions = {
+    chart: {
+      type: "bar", // ✅ Use a valid type instead of a generic string
+      toolbar: { show: false },
+    },
+    xaxis: {
+      categories: chartData.categories,
+    },
+    colors: ["#008FFB"],
+  };
 
-        <DashboardCard title="Sales Overview" action={
-            <Select
-                labelId="month-dd"
-                id="month-dd"
-                value={month}
-                size="small"
-                onChange={handleChange}
-            >
-                <MenuItem value={1}>March 2023</MenuItem>
-                <MenuItem value={2}>April 2023</MenuItem>
-                <MenuItem value={3}>May 2023</MenuItem>
-            </Select>
-        }>
-            <Chart
-                options={optionscolumnchart}
-                series={seriescolumnchart}
-                type="bar"
-                height={370} width={"100%"}
-            />
-        </DashboardCard>
-    );
+  return (
+    <div style={{ padding: "20px" }}>
+      <Typography variant="h6">User Registrations</Typography>
+
+      <Select
+        value={filter}
+        onChange={(e) => setFilter(e.target.value as "day" | "month" | "year")}
+        style={{ marginBottom: "10px" }}
+      >
+        <MenuItem value="day">Day</MenuItem>
+        <MenuItem value="month">Month</MenuItem>
+        <MenuItem value="year">Year</MenuItem>
+      </Select>
+
+      {chartData.series.length > 0 ? (
+        <ReactApexChart
+          options={chartOptions}
+          series={[{ name: "Users", data: chartData.series }]}
+          type="bar" // ✅ Make sure this matches a valid type
+          width={600}
+          height={400}
+        />
+      ) : (
+        <Typography>No data available</Typography>
+      )}
+    </div>
+  );
 };
 
-export default SalesOverview;
+export default UserRegistrationsChart;
