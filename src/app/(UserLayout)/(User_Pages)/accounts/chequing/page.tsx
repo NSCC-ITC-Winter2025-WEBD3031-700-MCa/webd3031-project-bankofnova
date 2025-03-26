@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react'; // Import useSession for session c
 import { useRouter } from 'next/navigation'; // Import useRouter for navigation
 // import RecentTransactions from "../../../components/overview/RecentTransactions";
 // import ProductPerformance from '@/app/(DashboardLayout)/components/dashboard/ProductPerformance';
-import ProductPerformance2 from "../../../components/overview/TransactionTable";
+import TransactionTable from "../../../components/overview/TransactionTable";
 import PurchaseCategories from "../../../components/blocks/PurchaseCategories";
 // import Traffic from "../../../components/overview/Traffic";
 
@@ -86,7 +86,14 @@ const ChequingPage = () => {
 
   </Grid>
 
-  <Grid>
+
+
+    <Grid>
+    <TransactionTable accountType="chequing" /> {/* Pass account type as prop */}
+    </Grid>
+
+
+    <Grid>
     <Divider />
     <PurchaseCategories 
     chartSeries={[50, 25, 15, 10]} 
@@ -106,10 +113,6 @@ const ChequingPage = () => {
     </CardContent>
   </Grid>
 
-
-    <Grid>
-    <ProductPerformance2 accountType="chequing" /> {/* Pass account type as prop */}
-    </Grid>
 
   </PageContainer>
 

@@ -1,3 +1,5 @@
+// src/app/api/user/transactionhistory/route.ts
+
 import { NextResponse } from 'next/server';
 import pool from '../../../../lib/db'; // Your MySQL pool
 import { getServerSession } from 'next-auth';
@@ -38,7 +40,8 @@ export async function GET(req: Request) {
       [userId, accountType]
     );
 
-    const account = accountResult as { id: number }[]; // Type assertion for rows
+    const account = accountResult as { id: string }[]; // Cast result to expected type
+
     if (!account || account.length === 0) {
       return NextResponse.json({ success: false, message: 'Account not found' }, { status: 404 });
     }
@@ -59,20 +62,26 @@ export async function GET(req: Request) {
           t.status,
           t.created_at
         FROM transactions t
-        WHERE t.receiver_account_id = ? 
+        WHERE t.receiver_account_id = ? OR t.sender_account_id = ?
         ORDER BY t.created_at DESC
         LIMIT 10
       `,
-      [accountId]
+      [accountId, accountId]
     );
 
     const transactions = transactionsResult as Transaction[]; // Type assertion for rows
 
-    if (transactions.length === 0) {
+    // Add a `direction` property to each transaction
+    const transactionsWithDirection = transactions.map((transaction) => ({
+      ...transaction,
+      direction: transaction.sender_account_id === accountId ? 'sent' : 'received',
+    }));
+
+    if (transactionsWithDirection.length === 0) {
       return NextResponse.json({ success: true, message: 'No transactions found', transactions: [] });
     }
 
-    return NextResponse.json({ success: true, transactions });
+    return NextResponse.json({ success: true, transactions: transactionsWithDirection });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ success: false, message: 'An error occurred while fetching transaction history' }, { status: 500 });

@@ -7,6 +7,7 @@ import RecentTransactions from "../../../components/overview/RecentTransactions"
 import { useSession } from 'next-auth/react'; // Import useSession for session check
 import { useRouter } from 'next/navigation'; // Import useRouter for navigation
 import ProductPerformance from "../../../components/overview/TransactionTable";
+import TransactionTable from "../../../components/overview/TransactionTable";
 
 const SavingsPage = () => {
   const { data: session, status } = useSession();
@@ -69,6 +70,11 @@ const SavingsPage = () => {
                 </CardContent>
             </Grid>
       </Grid>
+
+      <Grid>
+    <TransactionTable accountType="savings" /> {/* Pass account type as prop */}
+    </Grid>
+
     </PageContainer>
   );
 };

@@ -103,7 +103,6 @@ const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
     "/transactions/transfer/confirm",
     "/accounts/chequing",
     "/accounts/savings",
-    "/transactions",
     "/transactions/transfer",
     "/transactions/deposit",
     "/transactions/movemoney",
