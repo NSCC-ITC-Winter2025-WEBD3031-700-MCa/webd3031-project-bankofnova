@@ -1,17 +1,33 @@
-"use client"; 
+"use client";
 
-import { Grid, Box, Typography} from "@mui/material";
+import { Grid, Box, Typography, Tabs, Tab } from "@mui/material";
 import PageContainer from '../../../components/container/PageContainer';
-// import DashboardCard from '../components/shared/DashboardCard';
-// import BlankCard from '../components/shared/BlankCard';
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
 import { fetchUserBalance } from "../../../../api/user";
 import MonthlyEarnings from "../../../components/overview/MonthlyEarnings";
+import {
+  IconHome,
+  IconCurrencyDollar,
+  IconWallet, // Alternative to IconPiggyBank
+} from "@tabler/icons-react";
 
-// import RecentTransactions from "../components/overview/RecentTransactions";
+// Custom TabPanel component
+interface TabPanelProps {
+  children: React.ReactNode;
+  value: number;
+  index: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index } = props;
+  return (
+    <div role="tabpanel" hidden={value !== index}>
+      {value === index && <Box>{children}</Box>}
+    </div>
+  );
+}
 
 const OverviewPage = () => {
   const { data: session, status } = useSession();
@@ -19,6 +35,7 @@ const OverviewPage = () => {
   const [chequing, setChequing] = useState<number | null>(null);
   const [savings, setSavings] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedTab, setSelectedTab] = useState<number>(0); // To manage the selected tab
 
   useEffect(() => {
     // Redirect to login if not authenticated
@@ -30,9 +47,7 @@ const OverviewPage = () => {
     if (session) {
       const getBalances = async () => {
         try {
-          // Pass the user ID from the session to the fetchUserBalance function
-          const balances = await fetchUserBalance(); // Call without passing the userId
-          // ../../api/user.ts
+          const balances = await fetchUserBalance();
           setChequing(balances.chequing || 0);  
           setSavings(balances.savings || 0);
         } catch (error) {
@@ -45,8 +60,11 @@ const OverviewPage = () => {
       };
       getBalances();
     }
-  }, [session, status, router]); // Including router and status in dependency array
-   // Including router and status in dependency array
+  }, [session, status, router]);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setSelectedTab(newValue);
+  };
 
   return (
     <PageContainer title="Overview" description="this is OVERVIEW">
@@ -54,18 +72,43 @@ const OverviewPage = () => {
         <div>Loading...</div>
       ) : session ? (
         <Box>
-          <Typography variant="h1">Accounts</Typography>
-   
-          <Grid item xs={12} lg={8}  sx={{marginBottom: 2}}>
+          <Typography variant="h1" mt={3} mb={2}>Accounts</Typography>
           
-          <MonthlyEarnings title="Chequing" balance={chequing ?? 0} link="/accounts/chequing"/>
-          </Grid>
-          <Grid item xs={12} lg={8}>
+          <Tabs value={selectedTab} onChange={handleTabChange} aria-label="account-tabs">
+            <Tab 
+              icon={<IconHome />} 
+              label="All" 
+            />
+            <Tab 
+              icon={<IconCurrencyDollar />} 
+              label="Spending" 
+            />
+            <Tab 
+              icon={<IconWallet />} 
+              label="Saving" 
+            />
+          </Tabs>
+          
+          <TabPanel value={selectedTab} index={0}>
+            <Grid item xs={12} lg={8} sx={{ marginBottom: 2 }}>
+              <MonthlyEarnings title="Chequing" balance={chequing ?? 0} link="/accounts/chequing" />
+            </Grid>
+            <Grid item xs={12} lg={8}>
+              <MonthlyEarnings title="Savings" balance={savings ?? 0} link="/accounts/savings" color="#ff5733" />
+            </Grid>
+          </TabPanel>
 
-          <MonthlyEarnings title="Savings" balance={savings ?? 0} link="/accounts/savings" color="#ff5733" />
-          </Grid>
-        
-          
+          <TabPanel value={selectedTab} index={1}>
+            <Grid item xs={12} lg={8} sx={{ marginBottom: 2 }}>
+              <MonthlyEarnings title="Chequing" balance={chequing ?? 0} link="/accounts/chequing" />
+            </Grid>
+          </TabPanel>
+
+          <TabPanel value={selectedTab} index={2}>
+            <Grid item xs={12} lg={8}>
+              <MonthlyEarnings title="Savings" balance={savings ?? 0} link="/accounts/savings" color="#ff5733" />
+            </Grid>
+          </TabPanel>
         </Box>
       ) : (
         <div>You need to be logged in to view this page.</div>

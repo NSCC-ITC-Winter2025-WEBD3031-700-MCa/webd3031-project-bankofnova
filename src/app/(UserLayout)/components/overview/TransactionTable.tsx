@@ -6,6 +6,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Card
 } from '@mui/material';
 import DashboardCard from '../shared/DashboardCard';
 import { useEffect, useState } from 'react';
@@ -33,7 +34,8 @@ const TransactionTable = ({ accountType }: ProductPerformanceProps) => {
   }, [accountType]);
 
   return (
-    <DashboardCard title={`${accountType.charAt(0).toUpperCase() + accountType.slice(1)} Transaction History`}>
+    <Card             elevation={0}
+    title={`${accountType.charAt(0).toUpperCase() + accountType.slice(1)} Transaction History`}>
       <Box sx={{ overflow: 'auto' }}>
         <Table
           aria-label="transaction table"
@@ -109,7 +111,7 @@ const TransactionTable = ({ accountType }: ProductPerformanceProps) => {
           </TableBody>
         </Table>
       </Box>
-    </DashboardCard>
+    </Card>
   );
 };
 

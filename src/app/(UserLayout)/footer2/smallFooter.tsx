@@ -33,6 +33,7 @@ const Footersmall = () => {
         minHeight: "100%", // Ensure the container fills the height of the viewport
       }}
     >
+      {/* Only pass the footerHeight prop to ContentBox */}
       <ContentBox footerHeight={footerHeight}>
         {/* Your main content goes here */}
         <Box>
