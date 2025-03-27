@@ -74,7 +74,7 @@ const ChequingPage = () => {
       </CardContent>
     </Grid>
 
-    <Grid item xs={12}>
+    {/* <Grid item xs={12}>
       <CardContent>
         <Stack direction="row" spacing={1} flexWrap="wrap">
           <Chip label="Deposit" color="primary" />
@@ -82,7 +82,7 @@ const ChequingPage = () => {
           <Chip label="Move Money" color="success" />
         </Stack>
       </CardContent>
-    </Grid>
+    </Grid> */}
 
   </Grid>
 

@@ -1,46 +1,53 @@
-import React, { useState } from "react";
-import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
+import React from "react";
+import { Box, Typography, useTheme } from "@mui/material";
 import { styled } from "@mui/system";
-import { Logo } from "react-mui-sidebar";
 
-// Styled components
+// Define a custom interface for ContentBox props
+interface ContentBoxProps {
+  footerHeight: number; // Accept footerHeight prop
+}
+
 const FooterBox = styled(Box)(({ theme }) => ({
-  background: theme.palette.primary.main,
-  padding: theme.spacing(8, 0),
-  position: "relative",
-  overflow: "hidden",
-  "&::before": {
-    content: '""',
-    position: "absolute",
-    top: 0, left: 0, right: 0, bottom: 0,
-    background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)",
-    pointerEvents: "none"
-  }
+  backgroundColor: theme.palette.background.paper,
+  padding: theme.spacing(2),
+  textAlign: "center",
 }));
 
+// ContentBox does not need minHeight anymore, but adds flexGrow to push footer down
+const ContentBox = styled(Box)<ContentBoxProps>(({ theme, footerHeight }) => ({
+  display: "flex",
+  flexDirection: "column",
+  flexGrow: 1, // This will allow the content area to grow and push the footer down
+  marginBottom: footerHeight, // Ensure space for footer at the bottom
+}));
 
 const Footersmall = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-  // const [email, setEmail] = useState("");
-
-  // const handleSubscribe = () => {
-  //   console.log("Subscribed:", email);
-  //   setEmail("");
-  // };
+  const footerHeight = 56; // Approximate footer height (can be adjusted as per your footer's height)
 
   return (
-    <FooterBox>
-          {/* Footer Bottom */}
-          <Box pt={1} borderTop={1} m={2} borderColor="rgba(255,255,255,0.1)">
-            <Typography variant="body2" color="rgba(255,255,255,0.7)" align="center">
-              © {new Date().getFullYear()} Bank Of Nova. All rights reserved.
-            </Typography>
-          </Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100%", // Ensure the container fills the height of the viewport
+      }}
+    >
+      <ContentBox footerHeight={footerHeight}>
+        {/* Your main content goes here */}
+        <Box>
+          {/* Main page content */}
+        </Box>
+      </ContentBox>
+
+      {/* Footer Bottom */}
+      <FooterBox>
+        <Typography variant="body2" align="center">
+          © {new Date().getFullYear()} Bank Of Nova. All rights reserved.
+        </Typography>
       </FooterBox>
-    );
-    
+    </Box>
+  );
 };
 
 export default Footersmall;

@@ -24,6 +24,7 @@ const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
   const pathname = usePathname();
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
+  const smUp = useMediaQuery((theme: any) => theme.breakpoints.up("sm"));
 
   const blueBackground = ["/login", "/register", "/overview",  "/accounts/chequing",].includes(pathname);
 
@@ -121,7 +122,7 @@ const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
         <Stack spacing={1} direction="row" alignItems="center" sx={{ position: "absolute", right: session ? 10 : 50 }}>
           {!session ? (
             <>
-              {mdUp && (
+              {smUp && (
                 <Box mt={2}>
                   <Stack direction="row" spacing={2}>
                     <Button
@@ -166,21 +167,50 @@ const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
                   </Stack>
                 </Box>
               )}
-              {!mdUp && <Profile />}
+              {!smUp && <Profile />}
             </>
           ) : (
             <>
               {isOnAuthPages || isOnHomePage ? (
                 <>
-                  <Button variant="outlined" onClick={handleLogout} color="primary" disableElevation>
+                  <Button variant="outlined" onClick={handleLogout} 
+                  color="primary" 
+                  disableElevation
+                  
+                  sx={{
+                    borderRadius: "10px",
+
+                    backgroundColor: blueBackground ? "white" : "theme.primary",
+                    color: blueBackground ? "theme.primary" : "theme.primary",
+                    "&:hover": {
+                      backgroundColor: blueBackground ? "white" : "",
+                      border:blueBackground ? "1px solid #cdcdcd" : "",
+                    },
+                  }}
+                  >
                     Logout
                   </Button>
-                  <Button variant="contained" onClick={handleMyAccountsClick} color="primary" disableElevation>
+                  <Button 
+                    variant="contained" 
+                    onClick={handleMyAccountsClick} 
+                    color="primary"
+                    disableElevation
+                    sx={{
+                      borderRadius: "10px",
+
+                      border: "1px solid white",
+                      backgroundColor: "theme.primary",
+                      color: "theme.primary !important",
+                 
+                    }}
+                   >
                     My Accounts
                   </Button>
                 </>
               ) : (
                 <>
+
+
                   {/* <Button
                     variant="outlined"
                     onClick={handleMyAccountsClick}

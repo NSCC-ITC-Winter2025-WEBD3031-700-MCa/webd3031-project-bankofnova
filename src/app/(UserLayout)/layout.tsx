@@ -12,6 +12,8 @@ const MainWrapper = styled("div")(() => ({
   display: "flex",
   minHeight: "100vh",
   width: "100%",
+  flexDirection: "column",  // Ensures the page stretches vertically
+
 }));
 
 const PageWrapper = styled("div")(() => ({
@@ -79,9 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {showHomeCard && <BankCardRow />}
         {showFooter && <Footer />}
-
-        {/* {showFootersmall && <Footersmall />} */}
-
+        {showFootersmall && <Footersmall />}
       </PageWrapper>
     </MainWrapper>
   );
