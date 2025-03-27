@@ -56,7 +56,8 @@ const MSidebar = ({
 
   const shouldRenderAuthenticatedSidebar = status === 'authenticated';
   const shouldRenderUnauthenticatedSidebar = status === 'unauthenticated';
-  const isSpecialPage = ['/', '/login', '/register'].includes(pathname);
+  // const isSpecialPage = ['/', '/login', '/register'].includes(pathname);
+  const isSpecialPage = /^\/.*/.test(pathname);
 
 
 

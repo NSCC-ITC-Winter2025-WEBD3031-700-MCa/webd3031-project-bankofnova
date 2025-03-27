@@ -38,8 +38,10 @@ const Profile = () => {
     window.location.href = "/login";
   };
 
+
+
   // Check if the current route is specifically /login or /register
-  const isAuthPage = pathname === "/login" || pathname === "/register";
+  const pathsWithBlueBackground = pathname === "/login" || pathname === "/register" || pathname === "/overview" || pathname === "/accounts/chequing";
 
   return (
 <Box>
@@ -57,7 +59,7 @@ const Profile = () => {
     <IconUser
       width={35}
       style={{
-        color: isAuthPage ? "#FFFFFF" : "inherit", // White on /login and /register, default elsewhere
+        color: pathsWithBlueBackground ? "#FFFFFF" : "inherit", // White on /login and /register, default elsewhere
       }}
     />
   </IconButton>
