@@ -165,7 +165,7 @@ export default function TransferPage() {
 
           {/* Buttons */}
           <Box mt={2} display="flex" gap={2}>
-            <Button fullWidth variant="outlined" color="secondary" onClick={() => router.back()}>
+            <Button fullWidth variant="outlined" color="secondary" onClick={() =>  router.push(`/overview`)}>
               Cancel
             </Button>
             <Button fullWidth type="submit" variant="contained" color="primary">

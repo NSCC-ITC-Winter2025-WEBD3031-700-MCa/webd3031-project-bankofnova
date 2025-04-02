@@ -10,16 +10,10 @@ const UnauthSidebarItems = ({ toggleMobileSidebar }: any) => {
   const pathDirect = pathname;
 
   return (
-    <Box sx={{ px: 3 }}>
+    <Box sx={{ px: 1, pt: 3}}>
       <List sx={{ pt: 0 }} className="sidebarNav" component="div">
         {Menuitems.map((item) => {
-          // {/********SubHeader**********/}
-          if (item.subheader) {
-            return <NavGroup item={item} key={item.subheader} />;
-
-            // {/********If Sub Menu**********/}
-            /* eslint no-else-return: "off" */
-          } else {
+          if (item = item) {
             return (
               <NavItem
                 item={item}

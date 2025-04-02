@@ -1,10 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Typography, Button, Stack } from "@mui/material";
-import { signIn, getSession } from "next-auth/react"; 
+import { Box, Typography, Button, Stack, Chip, Card, Divider } from "@mui/material";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation"; // For navigation
 import CustomTextField from "../../(DashboardLayout)/components/forms/theme-elements/CustomTextField";
+import GoogleIcon from '@mui/icons-material/Google'; // Material UI Google Icon
+import GitHubIcon from '@mui/icons-material/GitHub'; // GitHub Icon
+import Link from "next/link";
 
 interface LoginProps {
   title?: string;
@@ -24,17 +27,12 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  // Function to check if input is a valid 10-digit number
-  const isValidAccountNumber = (accountNumber: string) => {
-    return /^\d{10}$/.test(accountNumber);
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validate the identifier (it must be either a 10-digit number or a valid email)
-    if (!isValidAccountNumber(identifier) && !isValidEmail(identifier)) {
-      setIdentifierError("Enter a valid 10-digit account number or a valid email address.");
+    if (!isValidEmail(identifier)) {
+      setIdentifierError("Enter a valid email address.");
       return;
     } else {
       setIdentifierError(""); // Clear error if valid
@@ -66,32 +64,51 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
   };
 
   return (
-    <>
-      {title && (
-        <Typography fontWeight="700" variant="h2" mb={1}>
-          {title}
-        </Typography>
-      )}
+    <Card
+    elevation={9}
+    sx={{ p: 6, zIndex: 1, width: "100%",
+        // Adding responsive styles for different breakpoints
+        "@media (max-width:600px)": {
+          p: 4, // Less padding for small screens (phones)
+          marginBottom: '25px',
+          marginLeft: "auto",
+          marginRight: "auto",
+        },
+        "@media (max-width:1044px)": {
+          p: 4, // Adjust padding for medium-sized screens (tablets)
+        },
+      }}
+    >
 
-      {subtext}
+      <form onSubmit={handleLogin} autoComplete="off" // Disable autofill for the entire form
+      >
+          {/* Hidden Dummy Inputs to Trick Browsers for Autofill Prevention */}
+          {/* Some browsers ignore autoComplete="off", so adding dummy fields can help */}
+          <input
+            type="text"
+            name="fakeUsername"
+            style={{ display: 'none' }}
+            autoComplete="username"
+          />
+          <input
+            type="password"
+            name="fakePassword"
+            style={{ display: 'none' }}
+            autoComplete="new-password"
+          />
 
-      <form onSubmit={handleLogin}>
         <Stack>
+          <Typography variant="h3" fontWeight="700"  mb="33px" >Login</Typography>
+          
           <Box>
-            <Typography
-              variant="subtitle1"
-              fontWeight={600}
-              component="label"
-              htmlFor="email"
-              mb="5px"
-            >
-              Email or Account Number
-            </Typography>
             <CustomTextField
+              label="Email"
+              type="login"
               variant="outlined"
-              fullWidth
-              value={identifier}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              sx={{
+                width: '50%', // Default width (50% on larger screens)
+                '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+              }}              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setIdentifier(e.target.value)
               }
               error={!!identifierError} // Apply error styling if validation fails
@@ -99,54 +116,131 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
             />
           </Box>
           <Box mt="25px">
-            <Typography
-              variant="subtitle1"
-              fontWeight={600}
-              component="label"
-              htmlFor="password"
-              mb="5px"
-            >
-              Password or PIN
-            </Typography>
-
             <CustomTextField
+              label="Password"
               type="password"
               variant="outlined"
-              fullWidth
-              value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              sx={{
+                marginBottom: '15px !important', // Adjust the value to your preference
+                width: '50%', // Default width (50% on larger screens)
+                '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+              }}              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setPassword(e.target.value)
               }
             />
           </Box>
 
           {error && (
-            <Typography color="error" mt={2} textAlign="center">
+            <Typography color="error" mt={2} textAlign="left">
               {error}
             </Typography>
           )}
+        </Stack>
 
-          <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
+        <Box mt={3}>
+          <Button
+            color="primary"
+            variant="contained"
+            size="large"
+            type="submit"
+            disableElevation
+            sx={{
+              borderRadius: '10px' ,
+              marginTop: '6px',
+              marginBottom:  '4px',
+              height: '44px',
+            }}
+          >
+                  <Typography variant="h6">
+                  Login
+              </Typography>
+          </Button>
+
+          <Box mt={3}> {/* Adds spacing between the button and the link */}
             <Typography
               component="a"
               href="/authentication/forgot-password"
               fontWeight="500"
-              sx={{ textDecoration: "none", color: "primary.main" }}
+              sx={{
+                textDecoration: 'none',
+                color: 'primary.main',
+                maxWidth: '130px',
+                display: 'block', // Ensures the link is treated as a block element, stacking it vertically
+              }}
             >
               Forgot Password?
             </Typography>
-          </Stack>
-        </Stack>
-
-        <Box>
-          <Button color="primary" variant="contained" size="large" fullWidth type="submit">
-            Sign In
-          </Button>
+          </Box>
         </Box>
       </form>
 
-      {subtitle}
-    </>
+      <Divider sx={{  marginTop: '20px', display: 'flex', alignItems: 'center',
+        width: '50%', // Default width (50% on larger screens)
+        '@media (max-width:800px)': { width: '100%' },
+      }}>
+        <Typography sx={{ padding: '0 10px' }}>or</Typography>
+      </Divider>
+
+
+      <Stack direction="column" spacing={2} my={2} mt={4}>
+        {/* Google Login Button */}
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => signIn("google")}
+          sx={{
+            width: '50%', // Default width (50% on larger screens)
+            '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+          }}   
+          startIcon={<GoogleIcon />}
+        >
+          Sign up with Google
+        </Button>
+
+        {/* GitHub SignIn Button */}
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => signIn("github")}
+          sx={{
+            width: '50%', // Default width (50% on larger screens)
+            '@media (max-width:800px)': { width: '100%' }, // Full width on small screens (sm and below)
+          }}  
+          startIcon={<GitHubIcon />}
+        >
+          Sign in with GitHub
+        </Button>
+      </Stack>
+
+      <Stack
+        direction="row"
+        spacing={1}
+        justifyContent="left"
+        mt={3}
+        sx={{
+        width: '50%', // Default width (50% on larger screens)
+        '@media (max-width:800px)': { width: '100%', justifyContent: "center" }}}
+      >
+        <Typography
+          color="textSecondary"
+          variant="h6"
+          fontWeight="500"
+        >
+          New to Bank of Nova?
+        </Typography>
+        <Typography
+          component={Link}
+          href="/register"
+          fontWeight="500"
+          sx={{
+            textDecoration: "none",
+            color: "primary.main",
+          }}
+        >
+          Create an account
+        </Typography>
+      </Stack>
+    </Card>
   );
 };
 

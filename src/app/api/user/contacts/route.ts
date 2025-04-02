@@ -8,7 +8,6 @@ import { authOptions } from '../../../../auth';
 interface BankAccount {
   id: string;
   account_type: string;
-  balance: number;
 }
 
 interface UserWithAccounts {
@@ -35,8 +34,7 @@ export async function GET() {
           u.name, 
           u.email, 
           ba.id AS account_id,
-          ba.account_type, 
-          ba.balance
+          ba.account_type 
         FROM users u
         LEFT JOIN bank_accounts ba ON ba.user_id = u.id
         ORDER BY u.created_at DESC
@@ -49,7 +47,7 @@ export async function GET() {
 
     // Transform the data to group bank accounts by user
     const usersWithAccounts = users.reduce<UserWithAccounts[]>((acc, user) => {
-      const { user_id, name, email, account_id, account_type, balance } = user;
+      const { user_id, name, email, account_id, account_type } = user;
 
       // Check if the user already exists in the accumulator
       let userEntry = acc.find(u => u.id === user_id);
@@ -63,7 +61,6 @@ export async function GET() {
         userEntry.bankAccounts.push({
           id: account_id,
           account_type,
-          balance,
         });
       }
 

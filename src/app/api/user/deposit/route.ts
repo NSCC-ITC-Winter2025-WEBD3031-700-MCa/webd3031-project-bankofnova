@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../../../auth";  // Adjust the path as needed
-import { processDeposit } from "../../../../lib/deposits";  // Adjust the path as needed
-import { getUserAccountsByUserId } from "../../../../lib/db";  // Adjust the path as needed
+import { authOptions } from "../../../../auth";  
+import { processDeposit } from "../../../../lib/deposits";  
+import { getUserAccountsByUserId } from "../../../../lib/db";  
 
 export async function POST(req: NextRequest) {
   try {

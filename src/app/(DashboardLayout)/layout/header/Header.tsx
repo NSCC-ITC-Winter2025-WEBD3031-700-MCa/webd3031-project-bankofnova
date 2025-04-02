@@ -5,29 +5,15 @@ import { Box, AppBar, Toolbar, styled, Stack, IconButton, Badge, Button } from '
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { useSession, signOut } from "next-auth/react"; // Import auth functions
-import { SessionProvider } from "next-auth/react"; // Import SessionProvider
 import Profile from './Profile';
 import { IconBellRinging, IconMenu } from '@tabler/icons-react';
 
 interface ItemType {
-  toggleMobileSidebar:  (event: React.MouseEvent<HTMLElement>) => void;
+  toggleMobileSidebar: (event: React.MouseEvent<HTMLElement>) => void;
 }
-
-const Header = ({ toggleMobileSidebar }: ItemType) => {
-  return (
-    <SessionProvider>
-      <HeaderContent toggleMobileSidebar={toggleMobileSidebar} />
-    </SessionProvider>
-  );
-};
 
 const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
   const { data: session } = useSession(); // Now safe to use
-
-  
-  // const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
-  // const lgDown = useMediaQuery((theme) => theme.breakpoints.down('lg'));
-
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: 'none',
@@ -38,6 +24,7 @@ const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
       minHeight: '70px',
     },
   }));
+  
   const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
     width: '100%',
     color: theme.palette.text.secondary,
@@ -60,7 +47,6 @@ const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
           <IconMenu width="20" height="20" />
         </IconButton>
 
-
         <IconButton
           size="large"
           aria-label="show 11 new notifications"
@@ -71,12 +57,13 @@ const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
           <Badge variant="dot" color="primary">
             <IconBellRinging size="21" stroke="1.5" />
           </Badge>
-
         </IconButton>
+        
         <Box flexGrow={1} />
+        
         <Stack spacing={1} direction="row" alignItems="center">
           {!session ? (
-            <Button variant="contained" component={Link} href="" color="primary">
+            <Button variant="contained" component={Link} href="/login" color="primary">
               Login
             </Button>
           ) : (
@@ -91,8 +78,12 @@ const HeaderContent = ({ toggleMobileSidebar }: ItemType) => {
   );
 };
 
+const Header = ({ toggleMobileSidebar }: ItemType) => {
+  return <HeaderContent toggleMobileSidebar={toggleMobileSidebar} />;
+};
+
 Header.propTypes = {
-  sx: PropTypes.object,
+  toggleMobileSidebar: PropTypes.func.isRequired,
 };
 
 export default Header;

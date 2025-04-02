@@ -6,15 +6,17 @@ import {
   IconMoodHappy,
   IconTypography,
   IconUserPlus,
+  IconHome,
+  IconCurrencyDollar,
+  IconBuildingBank, // Alternative to IconBank
+  IconTransfer,
+  IconWallet, // 
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
 
 const UnauthenticatedMenuItems = [
-  {
-    navlabel: true,
-    subheader: "Auth",
-  },
+
   {
     id: uniqueId(),
     title: "Login",
@@ -27,48 +29,20 @@ const UnauthenticatedMenuItems = [
     icon: IconUserPlus,
     href: "/register",
   },
+
   {
-    navlabel: true,
-    subheader: "Home",
+    id: uniqueId(),
+    title: "Save",
+    icon: IconWallet,
+    href: "/utilities/save",
   },
   {
     id: uniqueId(),
-    title: "Home",
-    icon: IconLayoutDashboard,
-    href: "/",
+    title: "Spend",
+    icon: IconCurrencyDollar,
+    href: "/utilities/spend",
   },
-  {
-    navlabel: true,
-    subheader: "Utilities",
-  },
-  {
-    id: uniqueId(),
-    title: "Typography",
-    icon: IconTypography,
-    href: "/utilities/typography",
-  },
-  {
-    id: uniqueId(),
-    title: "Shadow",
-    icon: IconCopy,
-    href: "/utilities/shadow",
-  },
-  {
-    navlabel: true,
-    subheader: "Extra",
-  },
-  {
-    id: uniqueId(),
-    title: "Icons",
-    icon: IconMoodHappy,
-    href: "/icons",
-  },
-  {
-    id: uniqueId(),
-    title: "Sample Page",
-    icon: IconAperture,
-    href: "/sample-page",
-  },
+
 ];
 
 export default UnauthenticatedMenuItems;

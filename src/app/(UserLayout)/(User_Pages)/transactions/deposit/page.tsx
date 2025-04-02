@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid, Box, Typography, CardContent, Button, TextField, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+import { Card, Box, Typography, CardContent, Button, TextField, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 import PageContainer from "../../../components/container/PageContainer";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -60,15 +60,42 @@ const handleDeposit = async (accountType: "chequing" | "savings") => {
 
 
   return (
-    <PageContainer title="Overview" description="this is HOME">
+    <PageContainer title="" description="">
+    <Card
+      elevation={9}
+      sx={{
+        p: 2,
+        zIndex: 1,
+        width: "100%",
+        marginTop: '45px',
+        marginBottom: '35px',
+        // Adding responsive styles for different breakpoints
+        "@media (max-width:600px)": {
+          p: 0, // Less padding for small screens (phones)
+          marginBottom: '25px',
+        },
+        "@media (max-width:960px)": {
+          p: 0, // Adjust padding for medium-sized screens (tablets)
+        },
+        "@media (min-width:960px)": {
+          width: "90%", // Keep the card width at 80% for medium to larger screens
+          marginLeft: "auto",
+          marginRight: "auto",
+        },
+        "@media (max-width:1044px)": {
+          p: 2, // Adjust padding for medium-sized screens (tablets)
+        },
+      }}
+    >
       {status === "loading" ? (
         <div>Loading...</div>
       ) : session ? (
         <Box>
-          <Typography variant="h1">Deposit</Typography>
+          <Typography variant="h1" mb={3}>Deposit</Typography>
 
           {/* Account Type Selection */}
-          <FormControl fullWidth sx={{ marginBottom: 2 }}>
+          <FormControl fullWidth sx={{ marginBottom: 2 , maxWidth: "320px",
+}}>
             <InputLabel>Account Type</InputLabel>
             <Select
               value={selectedAccount}
@@ -82,14 +109,30 @@ const handleDeposit = async (accountType: "chequing" | "savings") => {
 
           {/* Deposit Amount Input */}
           <TextField
-            label="Deposit Amount"
-            type="number"
-            variant="outlined"
-            value={depositAmount}
-            onChange={(e) => setDepositAmount(e.target.value)} // Store as string
-            fullWidth
-            sx={{ marginBottom: 2 }}
-          />
+  label="Deposit Amount"
+  type="number"
+  variant="outlined"
+  value={depositAmount}
+  onChange={(e) => setDepositAmount(e.target.value)} // Store as string
+  fullWidth
+  sx={{ marginBottom: 2 }}
+  InputProps={{
+    inputMode: 'decimal', // Prevent the number input spinner on mobile devices
+    disableUnderline: true, // Optional: Remove underline if you don't want it
+    sx: {
+      maxWidth: "320px",
+
+      '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+        display: 'none', // Remove the spinner in webkit-based browsers (Chrome/Safari)
+      },
+      '& input[type=number]': {
+        '-moz-appearance': 'textfield', // Firefox
+      },
+    },
+  }}
+/>
+
+
 
           {/* Deposit Button */}
           <Button
@@ -108,6 +151,7 @@ const handleDeposit = async (accountType: "chequing" | "savings") => {
       ) : (
         <div>You need to be logged in to view this page.</div>
       )}
+    </Card>
     </PageContainer>
   );
 };

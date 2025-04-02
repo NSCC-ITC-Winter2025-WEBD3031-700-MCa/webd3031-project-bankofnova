@@ -1,15 +1,12 @@
 'use client';
-import { Typography, Box, Grid, CardContent } from '@mui/material';
+import { Typography, Card, Box, Grid, CardContent, Divider,Stack, Chip } from '@mui/material';
 import PageContainer from '../../../components/container/PageContainer';
 import { useEffect, useState } from "react";
-import { fetchUserBalance } from "../../../../api/user"; // Assuming this function fetches the user's balance from the backend
+import { fetchUserBalance } from "../../../../api/user"; 
 import { useSession } from 'next-auth/react'; // Import useSession for session check
 import { useRouter } from 'next/navigation'; // Import useRouter for navigation
-// import RecentTransactions from "../../../components/overview/RecentTransactions";
-// import ProductPerformance from '@/app/(DashboardLayout)/components/dashboard/ProductPerformance';
-import ProductPerformance2 from "../../../components/overview/TransactionTable";
-// import PurchaseCategories from "../../../components/overview/PurchaseCategories";
-// import Traffic from "../../../components/overview/Traffic";
+import TransactionTable from "../../../components/overview/TransactionTable";
+import PurchaseCategories from "../../../components/blocks/PurchaseCategories";
 
 const ChequingPage = () => {
   const { data: session, status } = useSession();
@@ -51,9 +48,11 @@ const ChequingPage = () => {
 
   return (
 <PageContainer title="Chequing" description="This is your Chequing account overview">
+
+
   {/* Make sure the Grid container has correct props  bgcolor={"black"}*/}
   <Grid container direction="column" spacing={2}>
- 
+
     <Grid item xs={12}>
       <CardContent>
         <Typography variant="h2">Chequing</Typography>
@@ -72,28 +71,47 @@ const ChequingPage = () => {
       </CardContent>
     </Grid>
 
-    
+    {/* <Grid item xs={12}>
+      <CardContent>
+        <Stack direction="row" spacing={1} flexWrap="wrap">
+          <Chip label="Deposit" color="primary" />
+          <Chip label="E-Transfer" color="secondary" />
+          <Chip label="Move Money" color="success" />
+        </Stack>
+      </CardContent>
+    </Grid> */}
+
   </Grid>
-  <Grid>
-              <ProductPerformance2 />
-            </Grid>
-            {/* <Grid>
-              <LatestOrders />
-            </Grid> */}
-    
 
-    
-            {/* <Grid>
-        <Traffic chartSeries={[63, 15, 22]} labels={['Desktop', 'Tablet', 'Phone']} sx={{ height: '100%' }} />
-      </Grid>
 
-      <Grid>
-      <PurchaseCategories 
-  chartSeries={[50, 25, 15, 10]} 
-  labels={['Groceries', 'Restaurants', 'Online Shopping', 'Transportation']} 
-/>      </Grid> */}
 
-    </PageContainer>
+    <Grid>
+    <TransactionTable accountType="chequing" /> {/* Pass account type as prop */}
+    </Grid>
+
+
+    <Grid>
+    <Divider />
+    <PurchaseCategories 
+    chartSeries={[50, 25, 15, 10]} 
+    labels={['Groceries', 'Restaurants', 'Online Shopping', 'Transportation']} 
+  />
+  </Grid>
+  <Grid item xs={12}>
+    <CardContent>
+      <Stack direction="row" spacing={1} flexWrap="wrap">
+        <Chip label="Groceries" color="primary" />
+        <Chip label="Restaurants" color="secondary" />
+        <Chip label="Online Shopping" color="success" />
+        <Chip label="Transportation" color="error" />
+        <Chip label="Entertainment" color="warning" />
+        {/* Add more chips as needed */}
+      </Stack>
+    </CardContent>
+  </Grid>
+
+
+  </PageContainer>
 
   );
 };

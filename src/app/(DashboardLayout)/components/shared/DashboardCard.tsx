@@ -11,6 +11,8 @@ type Props = {
   headsubtitle?: string | JSX.Element;
   children?: JSX.Element;
   middlecontent?: string | JSX.Element;
+  elevation?: number; // Add this to control elevation
+  borderRadius?: number | string; // Add this to control border radius
 };
 
 const DashboardCard = ({
@@ -23,9 +25,15 @@ const DashboardCard = ({
   headtitle,
   headsubtitle,
   middlecontent,
+  elevation = 9, // Default to 9 if not provided
+  borderRadius = 4, // Default to 8px if not provided
 }: Props) => {
   return (
-    <Card sx={{ padding: 0 }} elevation={9} variant={undefined}>
+    <Card
+      sx={{ padding: 0, borderRadius: borderRadius }}
+      elevation={elevation}
+      variant={undefined}
+    >
       {cardheading ? (
         <CardContent>
           <Typography variant="h5">{headtitle}</Typography>

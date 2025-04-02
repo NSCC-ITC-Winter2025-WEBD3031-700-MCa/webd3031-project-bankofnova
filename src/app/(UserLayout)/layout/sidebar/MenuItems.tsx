@@ -2,7 +2,9 @@ import {
   IconHome,
   IconCurrencyDollar,
   IconBuildingBank, // Alternative to IconBank
-  IconTransfer,
+  IconArrowRight,  // Icon for E-Transfer
+  IconDownload,    // Icon for Deposit
+  IconArrowsLeftRight, // Icon for Move Money
   IconWallet, // Alternative to IconPiggyBank
 } from "@tabler/icons-react";
 
@@ -41,26 +43,20 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Transactions",
-    icon: IconTransfer,
-    href: "/transactions",
-  },
-  {
-    id: uniqueId(),
     title: "E-Transfer",
-    icon: IconTransfer,
+    icon: IconArrowRight,
     href: "/transactions/transfer",
   },
   {
     id: uniqueId(),
     title: "Deposit",
-    icon: IconTransfer,
+    icon: IconDownload,
     href: "/transactions/deposit",
   },
   {
     id: uniqueId(),
     title: "Move Money",
-    icon: IconTransfer,
+    icon: IconArrowsLeftRight,
     href: "/transactions/movemoney",
   },
 ];

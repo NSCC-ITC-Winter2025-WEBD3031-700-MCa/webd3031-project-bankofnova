@@ -2,11 +2,10 @@
 import { Typography, Grid, CardContent } from '@mui/material';
 import PageContainer from '../../../components/container/PageContainer';
 import { useEffect, useState } from "react";
-import { fetchUserBalance } from "../../../../api/user"; // Assuming this function fetches the user's savings balance from the backend
-import RecentTransactions from "../../../components/overview/RecentTransactions";
+import { fetchUserBalance } from "../../../../api/user"; 
 import { useSession } from 'next-auth/react'; // Import useSession for session check
 import { useRouter } from 'next/navigation'; // Import useRouter for navigation
-import ProductPerformance from "../../../components/overview/TransactionTable";
+import TransactionTable from "../../../components/overview/TransactionTable";
 
 const SavingsPage = () => {
   const { data: session, status } = useSession();
@@ -70,9 +69,10 @@ const SavingsPage = () => {
             </Grid>
       </Grid>
 
-            <Grid item sm={12}>
-              <ProductPerformance />
-            </Grid>
+      <Grid>
+    <TransactionTable accountType="savings" /> {/* Pass account type as prop */}
+    </Grid>
+
     </PageContainer>
   );
 };

@@ -2,15 +2,18 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 import { CustomSession } from "./lib/types"; // Your custom session type
-import { getUserByEmail, getUserByAccountNumber } from "./lib/db";
+import { getUserByEmail } from "./lib/db";
 import bcrypt from "bcryptjs";
+import GoogleProvider from "next-auth/providers/google"; // Google Provider
+import GitHubProvider from "next-auth/providers/github"; // GitHub Provider
+
 
 export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        identifier: { label: "Email or Account Number", type: "text" },
+        identifier: { label: "Email", type: "text" },
         password: { label: "Password or PIN", type: "password" },
       },
       async authorize(credentials) {
@@ -23,9 +26,7 @@ export const authOptions = {
 
         if (isEmail) {
           user = await getUserByEmail(credentials.identifier);
-        } else {
-          user = await getUserByAccountNumber(credentials.identifier);
-        }
+        } 
 
         console.log("User found:", user); // Check that bank account details are included
 
@@ -40,6 +41,15 @@ export const authOptions = {
 
         return null;
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
+    GitHubProvider({
+    clientId: process.env.GITHUB_CLIENT_ID!,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
   ],
   callbacks: {
