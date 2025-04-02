@@ -2,13 +2,14 @@
 import { Grid, Box } from '@mui/material';
 import PageContainer from '../components/container/PageContainer';
 // components
-import SalesOverview from '../components/dashboard/SalesOverview';
-import YearlyBreakup from '../components/dashboard/YearlyBreakup';
+import SalesOverview from '../components/dashboard/UserRegistration';
+import YearlyBreakup from '../components/dashboard/AllUsers';
 import RecentTransactions from '../components/dashboard/RecentTransactions';
 import ProductPerformance from '../components/dashboard/ProductPerformance';
 import Blog from '../components/dashboard/Blog';
 import MonthlyEarnings from '../components/dashboard/MonthlyEarnings';
-
+import AllUsers from '../components/dashboard/AllUsers';
+// ttt tt
 const Dashboard = () => {
   return (
     <PageContainer title="Dashboard" description="this is Dashboard">
