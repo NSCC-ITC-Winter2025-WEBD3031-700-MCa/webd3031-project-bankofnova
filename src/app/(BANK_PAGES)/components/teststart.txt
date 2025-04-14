@@ -1,0 +1,64 @@
+'use client';
+import React from 'react';
+import { Container, Box, Grid, Typography, Stack, Button } from '@mui/material';
+import Link from 'next/link';
+import { useMediaQuery, useTheme } from "@mui/material";
+
+const BankCardTest5 = () => {
+    const theme = useTheme();
+    const lgUp = useMediaQuery(theme.breakpoints.up("lg"));
+    const xlUp = useMediaQuery(theme.breakpoints.up("xl"));
+  return (
+    <Grid
+      container
+      sx={{
+        borderRadius: '16px',
+        // backgroundColor: 'lawngreen',
+        marginBottom: '16px',
+        padding: '50px',
+        marginTop: '100px',
+        overflow: 'hidden', // optional: to keep border radius consistent
+      }}
+    >
+      {/* First column */}
+      <Grid
+        item
+        // marginRight={"24px"}
+        xs={12}
+        md={4}
+        sx={{
+        backgroundColor: 'white',
+          border: '2px solid rgb(33, 39, 205)',
+          height: '250px',
+          padding: '5px',
+          // backgroundColor: 'info.dark',
+          borderRadius: '16px', 
+          display: 'flex',
+        }}
+      >
+
+      </Grid>
+
+      {/* Second column */}
+      <Grid
+        item
+        // marginRight={"24px"}
+        xs={12}
+        md={8}
+        sx={{
+        backgroundColor: 'white',
+          border: '2px solid rgb(0, 255, 76)',
+          height: '250px',
+          // backgroundColor: 'info.dark',
+          borderRadius: '16px', 
+          display: 'flex',
+        }}
+      >
+
+      </Grid>
+
+    </Grid>
+  );
+};
+
+export default BankCardTest5;

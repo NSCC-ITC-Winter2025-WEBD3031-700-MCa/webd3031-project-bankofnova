@@ -1,4 +1,5 @@
-// src/app/api/user/AllUsers/route.ts
+
+export const dynamic = 'force-dynamic'; 
 
 import { NextResponse } from 'next/server';
 import pool from '../../../../lib/db'; // Your MySQL pool
@@ -10,7 +11,7 @@ interface User {
   name: string;
   email: string;
   created_at: string; // Include created_at field
-  role: string; // Add role field to check if the user is admin
+  role: string; // Include role field
 }
 
 export async function GET() {

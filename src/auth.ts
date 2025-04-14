@@ -1,12 +1,13 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
-import { CustomSession } from "./lib/types"; // Your custom session type
-import { getUserByEmail, createUser } from "./lib/db"; // Import createUser function
+import { CustomSession } from "./lib/types";
+import { getUserByEmail, createUser, createDefaultChequingAccount, updateUser } from "./lib/db";
 import bcrypt from "bcryptjs";
-import GoogleProvider from "next-auth/providers/google"; // Google Provider
-import GitHubProvider from "next-auth/providers/github"; // GitHub Provider
-import { Account, Profile, User as NextAuthUser } from "next-auth"
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
+import { Account, Profile } from "next-auth";
+import { ExtendedUser } from "./lib/types";
 
 export const authOptions = {
   providers: [
@@ -17,10 +18,10 @@ export const authOptions = {
         password: { label: "Password or PIN", type: "password" },
       },
       async authorize(credentials) {
-        // Authentication logic for credentials
         if (!credentials?.identifier || !credentials?.password) {
           throw new Error("Identifier and password are required");
         }
+
         let user;
         const isEmail = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(credentials.identifier);
         if (isEmail) {
@@ -48,6 +49,7 @@ export const authOptions = {
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
   ],
+
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: Record<string, any> }) {
       if (user) {
@@ -58,6 +60,7 @@ export const authOptions = {
       }
       return token;
     },
+
     async session({ session, token }: { session: CustomSession; token: JWT }) {
       if (session.user) {
         session.user.id = token.id as string;
@@ -65,51 +68,92 @@ export const authOptions = {
         session.user.role = token.role as string;
         session.user.name = token.name as string | null;
       }
-      const expiration = token.exp && !isNaN(Number(token.exp)) ? new Date(Number(token.exp) * 1000) : new Date();
+
+      const expiration = token.exp && !isNaN(Number(token.exp))
+        ? new Date(Number(token.exp) * 1000)
+        : new Date();
+
       session.expires = expiration.toISOString();
+
       return session;
     },
-    async signIn({ user, account, profile }: { user: NextAuthUser; account: Account | null; profile?: Profile }) {
-      if (account && (account.provider === "google" || account.provider === "github")) {
-        const email = user.email || profile?.email || "";
-        const name = user.name || profile?.name || "Unknown";
 
-        let googleId = "";
-        let githubId = "";
+    async signIn({ user, account, profile }: { user: ExtendedUser; account: Account | null; profile?: Profile }) {
+      if (account && (account.provider === "google" || account.provider === "github")) {
+        const mutableUser = user as ExtendedUser; // mutable user
+
+        const email = mutableUser.email || profile?.email || "";
+
+        // Check if user exists in DB
+        const existingUser = await getUserByEmail(email) as {
+          id: number;
+          name?: string;
+          google_id?: string | null;
+          github_id?: string | null;
+        } | null;
+
+        let googleId: string | null = null;
+        let githubId: string | null = null;
 
         if (account.provider === "google") {
-          googleId = account.id as string;  // Type assertion to string
+          const googleProfile = profile as Profile & { sub?: string };
+          googleId = googleProfile?.sub || null;
         } else if (account.provider === "github") {
-          githubId = account.id as string || "";  // Type assertion to string
+          const githubProfile = profile as Profile & { id?: number | string };
+          githubId = githubProfile?.id?.toString() || null;
         }
 
-        // Check if user already exists in DB based on email
-        const existingUser = await getUserByEmail(email);
+        const displayName =
+        profile?.name ||
+        profile?.email?.split('@')[0] || // fallback to first part of email
+        "Unknown";
 
         if (!existingUser) {
+          // If no user exists, create new user
           const newUser = {
-            email: email,
-            name: name,
-            role: "user", // Default role
-            password: "", // No password for OAuth users
-            google_id: googleId || null,  // Store Google ID if available
-            github_id: githubId || null,  // Store GitHub ID if available
+            email,
+            name: displayName, 
+            password: "",
+            role: "user",
+            google_id: googleId || null,
+            github_id: githubId || null,
           };
 
-          console.log("Creating new user:", newUser);
+          const newUserId = await createUser(newUser);
+          await createDefaultChequingAccount(newUserId);
 
-          // Create the new user in the database
-          await createUser(newUser);
+          mutableUser.id = newUserId.toString();
+          mutableUser.google_id = googleId;
+          mutableUser.github_id = githubId;
+          mutableUser.name = displayName;
+          
+           } else {
+          // Update existing user IDs without overwriting existing data
+          const { google_id: existingGoogleId, github_id: existingGithubId } = existingUser;
+
+          const updatedUser = {
+            google_id: googleId || existingGoogleId || null,
+            github_id: githubId || existingGithubId || null,
+          };
+
+          await updateUser(String(existingUser.id), updatedUser);
+
+          mutableUser.id = existingUser.id.toString();
+          mutableUser.google_id = updatedUser.google_id;
+          mutableUser.github_id = updatedUser.github_id;
+          mutableUser.name = existingUser.name || "Unknown"; // ✅ Force correct name from DB
         }
       }
-      return true;     
+
+      return true;
     },
   },
+
   secret: process.env.NEXTAUTH_SECRET,
+
   pages: {
-    signIn: "/login", // Custom sign-in page
+    signIn: "/login",
   },
 };
 
 export default NextAuth(authOptions);
- 

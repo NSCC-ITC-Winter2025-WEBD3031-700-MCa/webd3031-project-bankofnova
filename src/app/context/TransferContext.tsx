@@ -5,7 +5,18 @@ interface TransferContextType {
   transferData: {
     fromAccount: string;
     receiverAccount: string;
+    
     toContact: string;
+    amount?: number;
+    status?: string;
+    date?: string;
+    transactionId?: number;
+    senderAccountType?: string;
+    senderAccountNumber?: number;
+    recipientName?: string;
+    recipientEmail?: string;
+    transactionType?: string;
+
   };
   setTransferData: React.Dispatch<React.SetStateAction<TransferContextType['transferData']>>;
 }

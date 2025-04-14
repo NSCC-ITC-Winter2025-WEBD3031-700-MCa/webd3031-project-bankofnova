@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Box, Typography, Button, Stack, Chip, Card, Divider } from "@mui/material";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation"; // For navigation
-import CustomTextField from "../../(DashboardLayout)/components/forms/theme-elements/CustomTextField";
+import CustomTextField from "../../(DASHBOARD_PAGES)/components/forms/theme-elements/CustomTextField";
 import GoogleIcon from '@mui/icons-material/Google'; // Material UI Google Icon
 import GitHubIcon from '@mui/icons-material/GitHub'; // GitHub Icon
 import Link from "next/link";
@@ -153,7 +153,7 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
             </Typography>
           </Button>
 
-          <Box mt={3}> {/* Adds spacing between the button and the link */}
+          {/* <Box mt={3}>
             <Typography
               component="a"
               href="/authentication/forgot-password"
@@ -162,12 +162,12 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
                 textDecoration: 'none',
                 color: 'primary.main',
                 maxWidth: '130px',
-                display: 'block', // Ensures the link is treated as a block element, stacking it vertically
+                display: 'block', 
               }}
             >
               Forgot Password?
             </Typography>
-          </Box>
+          </Box> */}
         </Box>
       </form>
 
@@ -183,7 +183,7 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
         {/* Google Login Button */}
         <Button
           variant="outlined"
-          color="primary"
+          color="inherit"
           onClick={() => signIn("google")}
           sx={{
             width: '50%', // Default width (50% on larger screens)
@@ -197,7 +197,7 @@ const AuthLogin = ({ title, subtitle, subtext }: LoginProps) => {
         {/* GitHub SignIn Button */}
         <Button
           variant="outlined"
-          color="primary"
+          color="inherit"
           onClick={() => signIn("github")}
           sx={{
             width: '50%', // Default width (50% on larger screens)

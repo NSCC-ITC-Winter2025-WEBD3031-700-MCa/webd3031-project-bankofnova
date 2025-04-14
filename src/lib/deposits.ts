@@ -1,6 +1,5 @@
 import pool from "./db"; // Ensure this imports your MariaDB connection
-
-export const processDeposit = async (userId: string, accountId: string, amount: number): Promise<boolean> => {
+export const processDeposit = async (userId: string, accountId: string, amount: number, sender_account_id: string): Promise<boolean> => {
   try {
     // Round the deposit amount to 2 decimal places before adding it to the balance
     const roundedAmount = Math.round(amount * 100) / 100;
@@ -25,10 +24,11 @@ export const processDeposit = async (userId: string, accountId: string, amount: 
       if ((userResult as any).length > 0) {
         const receiverId = (userResult as any)[0].user_id;
 
+        // Insert the transaction with the sender_account_id
         const [transactionResult] = await pool.query(
           `INSERT INTO transactions (sender_account_id, receiver_account_id, sender_id, receiver_id, transaction_type, amount, status) 
-          VALUES (NULL, ?, ?, ?, 'deposit', ?, 'completed')`,
-          [accountId, userId, receiverId, roundedAmount]
+          VALUES (?, ?, ?, ?, 'deposit', ?, 'completed')`,
+          [sender_account_id, accountId, userId, receiverId, roundedAmount]
         );
 
         // If the transaction was successfully inserted, commit the changes

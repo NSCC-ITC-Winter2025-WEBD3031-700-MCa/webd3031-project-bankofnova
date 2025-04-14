@@ -204,6 +204,8 @@ export default function RegisterForm({ subtext, subtitle }: RegisterFormProps) {
                     height: "44px",
                     marginBottom: "20px !important",
                     marginTop: "6px",
+                    borderRadius: '7px',
+
                   }}
                 >
                   <Typography variant="h6">

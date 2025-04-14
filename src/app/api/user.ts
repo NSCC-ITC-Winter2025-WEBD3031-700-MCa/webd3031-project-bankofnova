@@ -9,14 +9,18 @@ export async function fetchUserBalance() {
 
   // Ensure the response has the expected structure before returning balances
   if (data && data.balances) {
-    return data.balances; // Return balances if available
+    return {
+      chequing: data.balances.chequing || 0,
+      savings: data.balances.savings !== undefined ? data.balances.savings : null, // Set to null if savings is undefined
+    };
   } else {
-    return { chequing: 0, savings: 0 }; // Default empty balances if not found
+    return { chequing: 0, savings: null }; // Default null savings if not found
   }
 }
 
-// api/user.ts (or wherever your API calls are managed)
 
+
+// api/user.ts (or wherever your API calls are managed)
 export const fetchTransactions = async (accountType: 'chequing' | 'savings') => {
   try {
     const response = await fetch(`/api/user/transactionhistory?accountType=${accountType}`);

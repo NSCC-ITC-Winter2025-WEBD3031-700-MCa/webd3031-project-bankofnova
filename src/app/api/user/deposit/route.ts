@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../../../auth";  
 import { processDeposit } from "../../../../lib/deposits";  
 import { getUserAccountsByUserId } from "../../../../lib/db";  
-
 export async function POST(req: NextRequest) {
   try {
     // Get the session using NextAuth
@@ -12,14 +11,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Convert session.user.id to a string if needed
     const userId = session.user.id.toString();
     if (!userId) {
       return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
     }
 
-    // Get the deposit amount and accountType from the request body
-    const { amount, accountType } = await req.json();
+    const { amount, accountType, sender_account_id } = await req.json();
+
+    // Validate deposit amount
     if (isNaN(amount) || amount <= 0) {
       return NextResponse.json({ error: "Invalid deposit amount" }, { status: 400 });
     }
@@ -41,8 +40,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: `${accountType.charAt(0).toUpperCase() + accountType.slice(1)} account not found` }, { status: 400 });
     }
 
-    // Process the deposit and update the balance in the selected account
-    const success = await processDeposit(userId, account.id, amount);
+    // Process the deposit with the sender_account_id
+    const success = await processDeposit(userId, account.id, amount, sender_account_id);
     if (success) {
       return NextResponse.json({ message: "Deposit successful!" }, { status: 200 });
     } else {

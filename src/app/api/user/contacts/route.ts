@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic'; 
+
+
 import { NextResponse } from 'next/server';
 import pool from '../../../../lib/db'; // Your MySQL pool
 import { getServerSession } from 'next-auth';

@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic'; 
+
+
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 import pool from "../../../../lib/db";
