@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IconMail } from '@tabler/icons-react';
 import {
   Box,
   Menu,
@@ -10,11 +9,13 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Stack,
+  Typography,
   Avatar,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { IconListCheck, IconUser } from "@tabler/icons-react";
+import { IconListCheck, IconMail, IconUser } from "@tabler/icons-react";
 import { signOut, useSession } from "next-auth/react";
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 
@@ -73,9 +74,7 @@ const UnauthProfile = () => {
             {...stringAvatar(session.user.name)}
             sx={{
               borderRadius: "4px",
-              backgroundColor: pathsWithBlueBackground
-                ? "primary.main"
-                : "primary.main",
+              backgroundColor: pathsWithBlueBackground ? "primary.main" : "primary.main",
               color: pathsWithBlueBackground ? "white" : "white",
               marginRight: "15px",
             }}
@@ -111,19 +110,20 @@ const UnauthProfile = () => {
               },
             }}
           >
-           <MenuItem component={Link} href="/profile" onClick={handleClose2}>
-          <ListItemIcon>
-         <IconUser width={20} />
-        </ListItemIcon>
-        <ListItemText>My Profile</ListItemText>
-      </MenuItem>
+            <MenuItem component={Link} href="/profile" onClick={handleClose2}>
+              <ListItemIcon>
+                <IconUser width={20} />
+              </ListItemIcon>
+              <ListItemText>My Profile</ListItemText>
+            </MenuItem>
 
-             <MenuItem>
+            <MenuItem>
               <ListItemIcon>
                 <IconMail width={20} />
               </ListItemIcon>
               <ListItemText>My Account</ListItemText>
             </MenuItem>
+
             <MenuItem>
               <ListItemIcon>
                 <IconListCheck width={20} />
