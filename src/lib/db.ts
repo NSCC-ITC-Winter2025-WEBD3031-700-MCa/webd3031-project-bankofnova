@@ -19,6 +19,8 @@ export interface User {
   name: string;
   role: string;
   password: string; // Add the password field here for authentication
+  google_id?: string | null;
+  github_id?: string | null;
 }
 
 // GET user accounts by userId

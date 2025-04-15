@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Box,
@@ -13,36 +13,78 @@ import {
   TextField,
   Snackbar,
   Alert,
-  CircularProgress, // ✅ Import CircularProgress
-} from '@mui/material';
-import { useState, useEffect } from 'react';
+  CircularProgress,
+  Stack,
+  Chip,
+} from "@mui/material";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+
+// Define the type for the form data
+interface ProfileFormData {
+  name: string;
+  email: string;
+  password: string;
+}
 
 export default function ProfilePage() {
   const [tab, setTab] = useState(0);
-  const [user, setUser] = useState({ name: '', email: '' });
-  const [loading, setLoading] = useState(true); // ✅ Add loading state
+  const [user, setUser] = useState({ name: "", email: "" });
+  const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-  const [snackbar, setSnackbar] = useState({ open: false, message: '' });
-  const [showAlert, setShowAlert] = useState(false); // State to control alert visibility
+  const [snackbar, setSnackbar] = useState({ open: false, message: "" });
+  const [showAlert, setShowAlert] = useState(false);
+  const [integrations, setIntegrations] = useState({
+    githubLinked: false,
+    googleLinked: false,
+  });
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ProfileFormData>(); // Specify the form data type
 
   useEffect(() => {
-    fetch('/api/user/profile')
+    // Fetching user profile info
+    fetch("/api/user/profile")
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
+          console.log("Profile Data: ", data);
           setUser(data.user);
-          setFormData((prev) => ({
-            ...prev,
+          reset({
             name: data.user.name,
             email: data.user.email,
-          }));
+            password: "",
+          });
+        } else {
+          console.log("Failed to fetch profile data");
         }
       })
-      .finally(() => setLoading(false)); // ✅ Ensure loading is set to false
-  }, []);
+      .finally(() => setLoading(false));
+
+    // Fetching integration status for Google and GitHub
+    fetch("/api/user/account-intigration")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          console.log("Integration Data: ", data);
+          setIntegrations(data.data);
+        } else {
+          console.log("Failed to fetch integrations");
+        }
+      });
+  }, [reset]);
 
   const handleEdit = () => {
+    reset({
+      name: user.name,
+      email: user.email,
+      password: "",
+    });
     setOpenDialog(true);
     setShowAlert(true);
   };
@@ -52,38 +94,33 @@ export default function ProfilePage() {
     setShowAlert(false);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSave = async () => {
-    const res = await fetch('/api/user/profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
+  const onSubmit = async (data: ProfileFormData) => { // Use the ProfileFormData type here
+    const res = await fetch("/api/user/profile", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
     });
 
-    const data = await res.json();
+    const result = await res.json();
 
-    if (data.success) {
-      setUser({ name: formData.name, email: formData.email });
-      setSnackbar({ open: true, message: 'Profile updated successfully!' });
+    if (result.success) {
+      setUser({ name: data.name, email: data.email });
+      setSnackbar({ open: true, message: "Profile updated successfully!" });
       setOpenDialog(false);
       setShowAlert(false);
     } else {
-      setSnackbar({ open: true, message: 'Error: ' + data.message });
+      setSnackbar({ open: true, message: "Error: " + result.message });
     }
   };
 
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto', mt: 5 }}>
+    <Box sx={{ maxWidth: 800, mx: "auto", mt: 5 }}>
       <Typography variant="h4" gutterBottom>
         Profile
       </Typography>
 
-      {loading ? ( // ✅ Conditionally render loading indicator
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
+      {loading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 200 }}>
           <CircularProgress />
         </Box>
       ) : (
@@ -91,6 +128,7 @@ export default function ProfilePage() {
           <Tabs value={tab} onChange={(e, newValue) => setTab(newValue)} sx={{ mb: 2 }}>
             <Tab label="Details" />
             <Tab label="Edit Profile" />
+            <Tab label="Linked Accounts" />
           </Tabs>
 
           {tab === 0 && (
@@ -108,67 +146,117 @@ export default function ProfilePage() {
                 Edit Info
               </Button>
 
-              <Dialog open={openDialog} onClose={handleClose}>
+              <Dialog
+                open={openDialog}
+                onClose={(event, reason) => {
+                  if (reason === "backdropClick" || reason === "escapeKeyDown") return;
+                  handleClose();
+                }}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{ sx: { transition: "none" } }}
+              >
                 <DialogTitle>Edit Profile</DialogTitle>
-                <DialogContent>
-                  {showAlert && (
-                    <Alert severity="info" variant="outlined" sx={{ mb: 2 }}>
-                      You are about to change your login information. This includes your name, email, and password.
-                    </Alert>
-                  )}
+                <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+                  <DialogContent>
+                    {showAlert && (
+                      <Alert severity="info" variant="outlined" sx={{ mb: 2 }}>
+                        You are about to change your login information. This includes your name, email, and password.
+                      </Alert>
+                    )}
 
-                  <TextField
-                    margin="dense"
-                    label="Name"
-                    fullWidth
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
-                  <TextField
-                    margin="dense"
-                    label="Email"
-                    fullWidth
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                  <TextField
-                    margin="dense"
-                    label="New Password"
-                    fullWidth
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClose}>Cancel</Button>
-                  <Button onClick={handleSave} variant="contained">
-                    Save
-                  </Button>
-                </DialogActions>
+                    <Stack spacing={2} mt={1}>
+                      <TextField
+                        margin="dense"
+                        label="Name"
+                        fullWidth
+                        {...register("name")}
+                        error={!!errors.name}
+                        helperText={errors.name ? String(errors.name.message) : undefined}
+                      />
+
+                      <TextField
+                        margin="dense"
+                        label="Email"
+                        fullWidth
+                        disabled
+                        {...register("email")}
+                        error={!!errors.email}
+                        helperText={errors.email ? String(errors.email.message) : undefined}
+                      />
+
+                      <TextField
+                        margin="dense"
+                        label="New Password"
+                        type="password"
+                        fullWidth
+                        {...register("password")}
+                        error={!!errors.password}
+                        helperText={errors.password ? String(errors.password.message) : undefined}
+                      />
+                    </Stack>
+                  </DialogContent>
+
+                  <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button type="submit" variant="contained">
+                      Save
+                    </Button>
+                  </DialogActions>
+                </Box>
               </Dialog>
+            </Box>
+          )}
+
+          {tab === 2 && (
+            <Box>
+              <Typography variant="h6" gutterBottom>
+                Linked Accounts
+              </Typography>
+              <Stack spacing={2} mt={2}>
+                <Box>
+                  <Typography>Google</Typography>
+                  <Stack direction="row" spacing={2} alignItems="center" mt={1}>
+                    <Chip
+                      icon={integrations.googleLinked ? <CheckCircleOutlineIcon color="success" /> : undefined}
+                      label={integrations.googleLinked ? "Google Linked" : "Google Not Linked"}
+                      color={integrations.googleLinked ? "success" : "default"}
+                      variant="outlined"
+                    />
+                  </Stack>
+                </Box>
+
+                <Box>
+                  <Typography>GitHub</Typography>
+                  <Stack direction="row" spacing={2} alignItems="center" mt={1}>
+                    <Chip
+                      icon={integrations.githubLinked ? <CheckCircleOutlineIcon color="success" /> : undefined}
+                      label={integrations.githubLinked ? "GitHub Linked" : "GitHub Not Linked"}
+                      color={integrations.githubLinked ? "success" : "default"}
+                      variant="outlined"
+                    />
+                  </Stack>
+                </Box>
+              </Stack>
             </Box>
           )}
         </>
       )}
 
-<Snackbar
-  open={snackbar.open}
-  autoHideDuration={4000}
-  onClose={() => setSnackbar({ open: false, message: '' })}
-  message={snackbar.message}
-  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} // Centered on screen
-  sx={{
-    '& .MuiSnackbarContent-root': {
-      maxWidth: '90vw', // Keeps it from overflowing on small screens
-      width: 'auto',     // Shrink-to-fit behavior
-      textAlign: 'center',
-    },
-  }}
-/>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar({ open: false, message: "" })}
+        message={snackbar.message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            maxWidth: "90vw",
+            width: "auto",
+            textAlign: "center",
+          },
+        }}
+      />
     </Box>
   );
 }
